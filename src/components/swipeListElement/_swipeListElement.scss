@@ -1,0 +1,38 @@
+.swipe-list-element {
+    position: relative;
+    &__main {
+        background-color: red;
+        position: relative;
+        z-index: 100;
+        cursor: pointer;
+    }
+
+    &__left {
+        position: absolute;
+        top: 0;
+        height: 100%;
+        right: 0;
+        margin: 0;
+        z-index: 10;
+
+        h5 {
+            margin: 0;
+        }
+    }
+
+    &__right {
+        position: absolute;
+        top: 0;
+        margin: 0;
+        height: 100%;
+        z-index: 10;
+
+        h5 {
+            margin: 0;
+        }
+    }
+
+    &--return {
+        transition: transform 0.5s ease-in-out;
+    }
+}
