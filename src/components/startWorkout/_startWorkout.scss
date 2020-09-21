@@ -1,0 +1,15 @@
+@import '../../styles/variables';
+
+.start-workout {
+    height: 40rem;
+    background-color: $color-red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+
+    &__cta {
+        font-size: 3rem;
+        color: $color-off-white;
+    }
+}

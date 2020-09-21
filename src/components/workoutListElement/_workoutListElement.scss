@@ -1,0 +1,61 @@
+@import '../../styles/variables';
+
+.workout-list-side-element {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &__icon {
+        width: 3rem;
+        margin-bottom: 0.4rem;
+    }
+
+    &__text-content {
+        font-size: 1.3rem;
+        color: $color-off-white;
+        margin: 0 1rem;
+    }
+
+    &--left {
+        background-color: cornflowerblue;
+        justify-content: flex-start;
+        flex-direction: row-reverse;
+        padding-right: 2rem;
+    }
+
+    &--right {
+        background-color: crimson;
+        justify-content: flex-start;
+        align-items: center;
+        padding-left: 2rem;
+    }
+}
+
+.workout-list-element {
+    height: 6rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 40rem;
+
+    &__title {
+        font-size: 1.5rem;
+    }
+
+    &__inner-group {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 10rem;
+    }
+
+    &__duration {
+        font-size: 1.2rem;
+    }
+
+    &__icon {
+        width: 2.2rem;
+    }
+}

@@ -1,10 +1,11 @@
 import React from 'react';
+import './_startWorkout.scss';
 
 const StartWorkout: React.FC = () => {
     return (
-        <>
-           <p>Hello from StartWorkout</p>
-        </>
+        <section className="start-workout">
+           <p className="start-workout__cta">Start new workout</p>
+        </section>
     );
 };
 

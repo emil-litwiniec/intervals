@@ -3,14 +3,14 @@ import { calcDragDirection, DragDirection, DragThreshold } from '@/utils/drag';
 import './_swipeListElement.scss';
 
 interface Props {
-    leftElement: swipeListElement;
-    rightElement: swipeListElement;
+    leftElement: ISwipeListElement;
+    rightElement: ISwipeListElement;
 }
 
-type swipeListElement = {
+interface ISwipeListElement {
     content: ReactNode;
     handler: Function;
-};
+}
 
 interface State {
     initDragPos: { x: number; y: number };
@@ -42,7 +42,7 @@ class SwipeListElement extends React.PureComponent<Props, State> {
     }
 
     reset = () => {
-        this.mainElementRef.current!.classList.remove('return');
+        this.mainElementRef.current?.classList.remove('return');
         this.setState({
             initDragPos: { x: -1, y: -1 },
             dragDirection: DragDirection.NONE,
@@ -109,7 +109,7 @@ class SwipeListElement extends React.PureComponent<Props, State> {
 
     playReturnAnimation = (): void => {
         this.mainElementRef.current!.style.transform = `translateX(0px)`;
-        this.mainElementRef.current!.classList.add('swipe-list-element--return');
+        this.mainElementRef.current!.classList.add('return');
     };
 
     handleDragMouseStart = (event: MouseEvent): void => {
@@ -255,10 +255,10 @@ class SwipeListElement extends React.PureComponent<Props, State> {
                 <div className="swipe-list-element__main" ref={this.mainElementRef}>
                     {children}
                 </div>
-                <div className="swipe-list-element__left" ref={this.leftElementRef}>
+                <div className="swipe-list-element__side" ref={this.leftElementRef}>
                     {leftElement.content}
                 </div>
-                <div className="swipe-list-element__right" ref={this.rightElementRef}>
+                <div className="swipe-list-element__side" ref={this.rightElementRef}>
                     {rightElement.content}
                 </div>
             </div>

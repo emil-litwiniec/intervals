@@ -1,28 +1,41 @@
 import React from 'react';
-import SwipeListElement from '@/components/swipeListElement/SwipeListElement';
+import WorkoutListElement, { IWorkout } from '@/components/workoutListElement/WorkoutListElement';
+import './_workoutsList.scss';
+
+const workouts: IWorkout[] = [
+    {
+        workoutId: 5632,
+        workoutName: 'Fast One',
+        workoutDuration: 160,
+    },
+    {
+        workoutId: 8271,
+        workoutName: 'Heavy Breathing',
+        workoutDuration: 540,
+    },
+    {
+        workoutId: 9921,
+        workoutName: 'Forget Yourself',
+        workoutDuration: 1000,
+    },
+];
 
 const WorkoutsList: React.FC = () => {
-    const leftElement = <h5>Left element from props</h5>;
-    const rightElement = <h5>Right element from props</h5>;
+    const workoutsList = workouts.map((workout) => (
+        <WorkoutListElement
+            workoutId={workout.workoutId}
+            workoutName={workout.workoutName}
+            workoutDuration={workout.workoutDuration}
+        />
+    ));
     return (
-        <>
-            <SwipeListElement
-                leftElement={{
-                    content: leftElement,
-                    handler: () => {
-                        console.log('Running callback LEFT');
-                    },
-                }}
-                rightElement={{
-                    content: rightElement,
-                    handler: () => {
-                        console.log('Running callback RIGHT');
-                    },
-                }}
-            >
-                <h3>Main element from children</h3>
-            </SwipeListElement>
-        </>
+        <div className="workouts-list">
+            {workoutsList.length > 0 ? (
+                workoutsList
+            ) : (
+                <div className="workouts-list__no-workouts">No workouts found</div>
+            )}
+        </div>
     );
 };
 

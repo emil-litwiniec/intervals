@@ -1,10 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import MainView from '@/views/mainView/MainView';
+import './styles/App.scss';
 
 function App() {
     return (
-        <main>
+        <main className="main-wrapper">
             <Router>
                 <Switch>
                     <Route exact={true} path="/" component={MainView} />

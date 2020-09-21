@@ -1,0 +1,36 @@
+html {
+    font-size: 62.5%; // 10px //
+
+    @media only screen and (max-width: 90em) {
+        font-size: 50%;
+    }
+
+    scroll-behavior: smooth;
+}
+
+body {
+    // background-color: $color-primary;
+    margin: 0;
+}
+
+::selection {
+    // color: $color-bg-main;
+    // background: $color-primary;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+button {
+    background: none;
+    border-style: none;
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+}
+
+.main-wrapper {
+    height: 100vh;
+    overflow: hidden;
+}

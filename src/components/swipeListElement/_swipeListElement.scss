@@ -1,38 +1,32 @@
+@import '../../styles/variables';
+
 .swipe-list-element {
     position: relative;
     &__main {
-        background-color: red;
+        color: #f3f3f3;
+        background-color: $color-blue;
+        margin: 0;
+        height: min-content;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         position: relative;
         z-index: 100;
         cursor: pointer;
-    }
+        border-bottom: 1px solid #7683ef;
 
-    &__left {
-        position: absolute;
-        top: 0;
-        height: 100%;
-        right: 0;
-        margin: 0;
-        z-index: 10;
-
-        h5 {
-            margin: 0;
+        &.return {
+            transition: transform 0.5s ease-in-out;
         }
     }
 
-    &__right {
+    &__side {
         position: absolute;
         top: 0;
         margin: 0;
         height: 100%;
         z-index: 10;
-
-        h5 {
-            margin: 0;
-        }
-    }
-
-    &--return {
-        transition: transform 0.5s ease-in-out;
+        width: 100%;
     }
 }
