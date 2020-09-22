@@ -3,6 +3,7 @@ import SwipeListElement from '@/components/swipeListElement/SwipeListElement';
 import { useHistory } from 'react-router-dom';
 import './_workoutListElement.scss';
 import { IconPlay, IconEdit, IconDelete } from '@/misc/icons';
+import { formatSecondsToMinutes } from '@/utils/format';
 
 interface ISideListElement {
     classNameVariant: string;
@@ -67,7 +68,9 @@ const WorkoutListElement: React.FC<IWorkout> = ({ workoutId, workoutName, workou
                 <div className="workout-list-element">
                     <h3 className="workout-list-element__title">{workoutName}</h3>
                     <div className="workout-list-element__inner-group">
-                        <span className="workout-list-element__duration">{workoutDuration}</span>
+                        <span className="workout-list-element__duration">
+                            {formatSecondsToMinutes(workoutDuration || 0)}
+                        </span>
                         <IconPlay className="workout-list-element__icon" />
                     </div>
                 </div>
