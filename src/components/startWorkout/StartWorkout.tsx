@@ -1,10 +1,20 @@
-import React from 'react';
+import React, { RefObject, useRef } from 'react';
 import './_startWorkout.scss';
+import { useHistory } from 'react-router-dom';
+import ExpandButton from '@/components/button/ExpandButton';
 
 const StartWorkout: React.FC = () => {
+    const history = useHistory();
+
+    const handleButtonClicked = () => {
+        history.push('create');
+    };
+    
     return (
         <section className="start-workout">
-           <p className="start-workout__cta">Start new workout</p>
+            <ExpandButton handleClick={handleButtonClicked} variant="start-workout">
+                <div>Start new workout</div>
+            </ExpandButton>
         </section>
     );
 };

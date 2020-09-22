@@ -3,6 +3,7 @@ import SwipeListElement from '@/components/swipeListElement/SwipeListElement';
 import { useHistory } from 'react-router-dom';
 import './_workoutListElement.scss';
 import { IconPlay, IconEdit, IconDelete } from '@/misc/icons';
+import Button from '@/components/button/Button';
 import { formatSecondsToMinutes } from '@/utils/format';
 
 interface ISideListElement {
@@ -53,6 +54,10 @@ const WorkoutListElement: React.FC<IWorkout> = ({ workoutId, workoutName, workou
 
     const handleRemoveAction = () => {};
 
+    const handlePlayButtonClicked = () => {
+        history.push(`workout/${workoutId}`);
+    };
+
     return (
         <>
             <SwipeListElement
@@ -71,7 +76,9 @@ const WorkoutListElement: React.FC<IWorkout> = ({ workoutId, workoutName, workou
                         <span className="workout-list-element__duration">
                             {formatSecondsToMinutes(workoutDuration || 0)}
                         </span>
-                        <IconPlay className="workout-list-element__icon" />
+                        <Button handleClick={handlePlayButtonClicked} variant="play">
+                            <IconPlay className="workout-list-element__icon" />
+                        </Button>
                     </div>
                 </div>
             </SwipeListElement>
