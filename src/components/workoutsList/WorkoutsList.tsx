@@ -26,6 +26,7 @@ const WorkoutsList: React.FC = () => {
             workoutId={workout.workoutId}
             workoutName={workout.workoutName}
             workoutDuration={workout.workoutDuration}
+            key={workout.workoutId}
         />
     ));
     return (

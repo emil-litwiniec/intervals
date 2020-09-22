@@ -2,8 +2,7 @@ import React, { ReactNode } from 'react';
 import SwipeListElement from '@/components/swipeListElement/SwipeListElement';
 import { useHistory } from 'react-router-dom';
 import './_workoutListElement.scss';
-import IconPlay from '@/misc/icons/IconPlay';
-import IconEdit from '@/misc/icons/IconEdit';
+import { IconPlay, IconEdit, IconDelete } from '@/misc/icons';
 
 interface ISideListElement {
     classNameVariant: string;
@@ -37,14 +36,14 @@ const WorkoutListElement: React.FC<IWorkout> = ({ workoutId, workoutName, workou
 
     const editAction = createSwipeListSideElement({
         classNameVariant: 'left',
-        textContent: 'Edit Workout',
+        textContent: 'Edit',
         icon: <IconEdit className="workout-list-side-element__icon" />,
     });
 
     const removeAction = createSwipeListSideElement({
         classNameVariant: 'right',
-        textContent: 'Remove Workout',
-        icon: <IconEdit className="workout-list-side-element__icon" />,
+        textContent: 'Remove',
+        icon: <IconDelete className="workout-list-side-element__icon" />,
     });
 
     const handleEditAction = () => {

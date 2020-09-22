@@ -1,5 +1,5 @@
 import React, { ReactNode, RefObject } from 'react';
-import { calcDragDirection, DragDirection, DragThreshold } from '@/utils/drag';
+import { calcDragDirection, DragDirection } from '@/utils/drag';
 import './_swipeListElement.scss';
 
 interface Props {
@@ -26,6 +26,11 @@ class SwipeListElement extends React.PureComponent<Props, State> {
     leftElementRef: RefObject<HTMLDivElement>;
     rightElementRef: RefObject<HTMLDivElement>;
     mainElementRef: RefObject<HTMLDivElement>;
+
+    dragThreshold = {
+        horizontal: 10,
+        vertical: 10,
+    }
 
     constructor(props: Props) {
         super(props);
@@ -84,10 +89,11 @@ class SwipeListElement extends React.PureComponent<Props, State> {
     };
 
     handleDragEnd = (): void => {
-        const threshold = 0.65;
-        let actionTriggered = false;
-
         if (!this.isSwiping || !this.mainElementRef) return;
+
+        const isSmallDevice = window.innerWidth < 1300;
+        const threshold = isSmallDevice ? 0.3 : 0.18; // drag distance to trigger action (in %)
+        let actionTriggered = false;
 
         const swipedLeft =
             this.state.position <
@@ -135,14 +141,6 @@ class SwipeListElement extends React.PureComponent<Props, State> {
         return this.dragStartedWithinItem && horizontalDrag;
     }
 
-    get dragThreshold(): DragThreshold {
-        return {
-            // horizontal: this.props.swipeStartThreshold || 10,
-            // vertical: this.props.scrollStartThreshold || 10
-            horizontal: 10,
-            vertical: 10,
-        };
-    }
     handleMouseMove = (event: MouseEvent) => {
         if (this.dragStartedWithinItem) {
             const { clientX, clientY } = event;
@@ -182,13 +180,7 @@ class SwipeListElement extends React.PureComponent<Props, State> {
 
         this.mainElementRef.current!.style.transform = `translateX(${this.state.position}px)`;
 
-        const opacity = (Math.abs(this.state.position) / 100).toFixed(2);
-        const shouldUpdateOpacity =
-            Number(opacity) < 1 && opacity !== contentToShow.current?.style.opacity;
-
-        if (!shouldUpdateOpacity) return;
-
-        contentToShow.current!.style.opacity = opacity;
+        contentToShow.current!.style.opacity = '1';
         let contentToHide = this.state.position < 0 ? this.rightElementRef : this.leftElementRef;
 
         if (contentToHide) {
