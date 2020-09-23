@@ -1,5 +1,6 @@
 import React, { ReactNode, RefObject } from 'react';
 import { calcDragDirection, DragDirection } from '@/utils/drag';
+import DraggableComponentBase from '@/components/draggableComponentBase/DraggableComponentBase';
 import './_swipeListElement.scss';
 
 interface Props {
@@ -19,9 +20,7 @@ interface State {
     startTime: number | null;
 }
 
-class SwipeListElement extends React.PureComponent<Props, State> {
-    container: RefObject<HTMLDivElement>;
-    requestAnimationFrame: number | null = null;
+class SwipeListElement extends DraggableComponentBase<Props, State> {
     state: State;
     leftElementRef: RefObject<HTMLDivElement>;
     rightElementRef: RefObject<HTMLDivElement>;
@@ -30,11 +29,10 @@ class SwipeListElement extends React.PureComponent<Props, State> {
     dragThreshold = {
         horizontal: 10,
         vertical: 10,
-    }
+    };
 
     constructor(props: Props) {
         super(props);
-        this.container = React.createRef<HTMLDivElement>();
         this.leftElementRef = React.createRef<HTMLDivElement>();
         this.rightElementRef = React.createRef<HTMLDivElement>();
         this.mainElementRef = React.createRef<HTMLDivElement>();
@@ -53,39 +51,6 @@ class SwipeListElement extends React.PureComponent<Props, State> {
             dragDirection: DragDirection.NONE,
             position: 0,
         });
-    };
-
-    componentDidMount() {
-        this.container?.current?.addEventListener('mousedown', this.handleDragMouseStart);
-        this.container?.current?.addEventListener('touchstart', this.handleTouchStart);
-        this.container?.current?.addEventListener('touchend', this.handleTouchEnd);
-        this.container?.current?.addEventListener('touchmove', this.handleTouchMove);
-    }
-
-    componentWillUnmount() {
-        this.clearRequestAnimationFrame();
-        this.container.current?.removeEventListener('mousedown', this.handleDragMouseStart);
-        this.container.current?.removeEventListener('touchstart', this.handleTouchStart);
-        this.container.current?.removeEventListener('touchend', this.handleTouchEnd);
-        this.container.current?.removeEventListener('touchmove', this.handleTouchMove);
-    }
-
-    clearRequestAnimationFrame = (): void => {
-        if (!this.requestAnimationFrame) return;
-        cancelAnimationFrame(this.requestAnimationFrame);
-
-        this.requestAnimationFrame = null;
-    };
-
-    handleTouchStart = (event: TouchEvent) => {
-        window.addEventListener('touchend', this.handleTouchEnd);
-        const touch = event.targetTouches[0];
-        this.handleDragStart(touch as any);
-    };
-
-    handleTouchEnd = (): void => {
-        window.removeEventListener('touchend', this.handleTouchEnd);
-        this.handleDragEnd();
     };
 
     handleDragEnd = (): void => {
@@ -118,15 +83,6 @@ class SwipeListElement extends React.PureComponent<Props, State> {
         this.mainElementRef.current!.classList.add('return');
     };
 
-    handleDragMouseStart = (event: MouseEvent): void => {
-        window.addEventListener('mouseup', this.handleDragMouseEnd);
-        window.addEventListener('mousemove', this.handleMouseMove);
-        this.container?.current?.addEventListener('mouseup', this.handleDragMouseEnd);
-        this.container?.current?.addEventListener('mousemove', this.handleMouseMove);
-
-        this.handleDragStart(event);
-    };
-
     get dragStartedWithinItem(): boolean {
         const { x, y } = this.state.initDragPos;
 
@@ -156,16 +112,6 @@ class SwipeListElement extends React.PureComponent<Props, State> {
             if (!event.cancelable) return;
             this.preventAndUpdatePosition(event, clientX);
         }
-    };
-
-    update = () => {
-        if (this.requestAnimationFrame) return;
-
-        this.requestAnimationFrame = requestAnimationFrame(() => {
-            this.requestAnimationFrame = null;
-
-            this.updatePosition();
-        });
     };
 
     updatePosition = (): void => {
@@ -205,16 +151,6 @@ class SwipeListElement extends React.PureComponent<Props, State> {
             this.dragThreshold
         );
         this.setState({ dragDirection: dragDirection });
-    };
-
-    handleDragMouseEnd = (): void => {
-        window.removeEventListener('mouseup', this.handleDragMouseEnd);
-        window.removeEventListener('mousemove', this.handleMouseMove);
-
-        this.container?.current?.removeEventListener('mousemove', this.handleMouseMove);
-        this.container?.current?.removeEventListener('mouseup', this.handleDragMouseEnd);
-
-        this.handleDragEnd();
     };
 
     handleDragStart = (event: MouseEvent): void => {
