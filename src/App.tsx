@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import MainView from '@/views/mainView/MainView';
+import { MainView, EditView, WorkoutView } from '@/views';
+
 import './styles/App.scss';
 
 function App() {
@@ -9,8 +10,11 @@ function App() {
             <Router>
                 <Switch>
                     <Route exact={true} path="/" component={MainView} />
-                    {/* <Route path="" component={EditWorkoutView} /> */}
-                    {/* <Route path="/workout/:workoutId" component={WorkoutView}/> */}
+
+                    <Route path="/edit/:workoutId" component={EditView} />
+                    <Route path="/create" component={EditView} />
+
+                    <Route path="/workout/:workoutId" component={WorkoutView} />
                 </Switch>
             </Router>
         </main>

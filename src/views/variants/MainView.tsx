@@ -1,16 +1,14 @@
 import React from 'react';
 import StartWorkout from '@/components/startWorkout/StartWorkout';
 import WorkoutsList from '@/components/workoutsList/WorkoutsList';
-import './_mainView.scss';
+import View from '../View';
 
-type Props = {};
-
-const MainView: React.FC<Props> = () => {
+const MainView: React.FC = () => {
     return (
-        <div className="main-view__container">
+        <View variant="main">
             <StartWorkout />
             <WorkoutsList />
-        </div>
+        </View>
     );
 };
 
