@@ -13,15 +13,7 @@ interface ISwipeListElement {
     handler: Function;
 }
 
-interface State {
-    initDragPos: { x: number; y: number };
-    dragDirection: DragDirection;
-    position: number;
-    startTime: number | null;
-}
-
-class SwipeListElement extends DraggableComponentBase<Props, State> {
-    state: State;
+class SwipeListElement extends DraggableComponentBase<Props> {
     leftElementRef: RefObject<HTMLDivElement>;
     rightElementRef: RefObject<HTMLDivElement>;
     mainElementRef: RefObject<HTMLDivElement>;
@@ -39,8 +31,9 @@ class SwipeListElement extends DraggableComponentBase<Props, State> {
         this.state = {
             initDragPos: { x: 0, y: 0 },
             dragDirection: DragDirection.NONE,
-            position: 0,
+            position: { x: 0, y: 0 },
             startTime: null,
+            lastUpdatePosition: { x: 0, y: 0 },
         };
     }
 
@@ -49,22 +42,22 @@ class SwipeListElement extends DraggableComponentBase<Props, State> {
         this.setState({
             initDragPos: { x: -1, y: -1 },
             dragDirection: DragDirection.NONE,
-            position: 0,
+            position: { x: 0, y: 0 },
         });
     };
 
     handleDragEnd = (): void => {
-        if (!this.isSwiping || !this.mainElementRef) return;
+        if (!this.isHorizontalDrag || !this.mainElementRef) return;
 
         const isSmallDevice = window.innerWidth < 1300;
         const threshold = isSmallDevice ? 0.3 : 0.18; // drag distance to trigger action (in %)
         let actionTriggered = false;
 
         const swipedLeft =
-            this.state.position <
+            this.state.position.x <
             Number(this.mainElementRef?.current?.offsetWidth) * threshold * -1;
         const swipedRight =
-            this.state.position > Number(this.mainElementRef?.current?.offsetWidth) * threshold;
+            this.state.position.x > Number(this.mainElementRef?.current?.offsetWidth) * threshold;
 
         if (swipedLeft) {
             this.handleSwipeLeft();
@@ -83,85 +76,25 @@ class SwipeListElement extends DraggableComponentBase<Props, State> {
         this.mainElementRef.current!.classList.add('return');
     };
 
-    get dragStartedWithinItem(): boolean {
-        const { x, y } = this.state.initDragPos;
-
-        return x !== -1 && y !== -1;
-    }
-
-    get isSwiping(): boolean {
-        const horizontalDrag =
-            this.state.dragDirection === DragDirection.LEFT ||
-            this.state.dragDirection === DragDirection.RIGHT;
-
-        return this.dragStartedWithinItem && horizontalDrag;
-    }
-
-    handleMouseMove = (event: MouseEvent) => {
-        if (this.dragStartedWithinItem) {
-            const { clientX, clientY } = event;
-            this.setDragDirection(clientX, clientY);
-            this.preventAndUpdatePosition(event, clientX);
-        }
-    };
-
-    handleTouchMove = (event: TouchEvent) => {
-        if (this.dragStartedWithinItem) {
-            const { clientX, clientY } = event.targetTouches[0];
-            this.setDragDirection(clientX, clientY);
-            if (!event.cancelable) return;
-            this.preventAndUpdatePosition(event, clientX);
-        }
-    };
-
     updatePosition = (): void => {
         const now = Date.now();
         const elapsed = now - this.state.startTime!;
         const interval = 1000 / 60;
 
-        const shouldSwipe = elapsed > interval && this.isSwiping;
+        const shouldSwipe = elapsed > interval && this.isHorizontalDrag;
         if (!shouldSwipe) return;
 
-        const contentToShow = this.state.position < 0 ? this.leftElementRef : this.rightElementRef;
+        const contentToShow =
+            this.state.position.x < 0 ? this.leftElementRef : this.rightElementRef;
 
-        this.mainElementRef.current!.style.transform = `translateX(${this.state.position}px)`;
+        this.mainElementRef.current!.style.transform = `translateX(${this.state.position.x}px)`;
 
         contentToShow.current!.style.opacity = '1';
-        let contentToHide = this.state.position < 0 ? this.rightElementRef : this.leftElementRef;
+        let contentToHide = this.state.position.x < 0 ? this.rightElementRef : this.leftElementRef;
 
         if (contentToHide) {
             contentToHide.current!.style.opacity = '0';
         }
-    };
-
-    preventAndUpdatePosition = (event: Event, clientX: number) => {
-        if (!this.isSwiping) return;
-        event.stopPropagation();
-        event.preventDefault();
-
-        this.setState((state) => ({ position: clientX - state.initDragPos.x }));
-        this.update();
-    };
-
-    setDragDirection = (x: number, y: number): void => {
-        if (!(this.state.dragDirection === DragDirection.NONE)) return;
-        const dragDirection = calcDragDirection(
-            { x, y },
-            this.state.initDragPos,
-            this.dragThreshold
-        );
-        this.setState({ dragDirection: dragDirection });
-    };
-
-    handleDragStart = (event: MouseEvent): void => {
-        const { clientX, clientY } = event;
-        this.reset();
-        this.setState({
-            initDragPos: { x: clientX, y: clientY },
-            startTime: Date.now(),
-        });
-
-        this.update();
     };
 
     handleSwipeLeft = (): void => {

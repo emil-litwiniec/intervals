@@ -1,0 +1,47 @@
+@import '../../styles/variables';
+
+.editor-element {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 10;
+
+    &__name {
+        color: white;
+        font-size: 2rem;
+    }
+
+    &__duration {
+        color: white;
+        font-size: 1.8rem;
+        margin-left: 5rem;
+    }
+
+    & .editor-element__duration-change {
+        position: absolute;
+        z-index: 50;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        transition: opacity 0.2s ease-in-out;
+
+        opacity: 0;
+
+        p {
+            font-size: 3rem;
+            color: white;
+        }
+    }
+
+    &.show-duration {
+        .editor-element__duration-change {
+            opacity: 1;
+        }
+    }
+}
