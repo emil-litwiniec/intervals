@@ -1,8 +1,15 @@
+@import '../../styles/variables';
+
 .workouts-list {
     display: flex;
     flex-direction: column;
+    min-height: 18rem;
+    background-color: $color-blue;
 
     &__no-workouts {
-        
+        font-size: 1.8rem;
+        color: $color-off-white;
+        opacity: 0.9;
+        margin: auto;
     }
 }

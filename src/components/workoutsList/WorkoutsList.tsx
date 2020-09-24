@@ -30,13 +30,13 @@ const WorkoutsList: React.FC = () => {
         />
     ));
     return (
-        <div className="workouts-list">
+        <section className="workouts-list">
             {workoutsList.length > 0 ? (
                 workoutsList
             ) : (
                 <div className="workouts-list__no-workouts">No workouts found</div>
             )}
-        </div>
+        </section>
     );
 };
 
