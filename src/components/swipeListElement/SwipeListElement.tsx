@@ -1,14 +1,14 @@
 import React, { ReactNode, RefObject } from 'react';
-import { calcDragDirection, DragDirection } from '@/utils/drag';
+import { DragDirection, Point } from '@/utils/drag';
 import DraggableComponentBase from '@/components/draggableComponentBase/DraggableComponentBase';
 import './_swipeListElement.scss';
 
 interface Props {
-    leftElement: ISwipeListElement;
-    rightElement: ISwipeListElement;
+    leftElement: SwipeListSideElement;
+    rightElement: SwipeListSideElement;
 }
 
-interface ISwipeListElement {
+interface SwipeListSideElement {
     content: ReactNode;
     handler: Function;
 }
@@ -29,20 +29,20 @@ class SwipeListElement extends DraggableComponentBase<Props> {
         this.rightElementRef = React.createRef<HTMLDivElement>();
         this.mainElementRef = React.createRef<HTMLDivElement>();
         this.state = {
-            initDragPos: { x: 0, y: 0 },
+            initDragPos: new Point(),
             dragDirection: DragDirection.NONE,
-            position: { x: 0, y: 0 },
+            position: new Point(),
             startTime: null,
-            lastUpdatePosition: { x: 0, y: 0 },
+            lastUpdatePosition: new Point(),
         };
     }
 
     reset = () => {
         this.mainElementRef.current?.classList.remove('return');
         this.setState({
-            initDragPos: { x: -1, y: -1 },
+            initDragPos: new Point(-1, -1),
             dragDirection: DragDirection.NONE,
-            position: { x: 0, y: 0 },
+            position: new Point(),
         });
     };
 

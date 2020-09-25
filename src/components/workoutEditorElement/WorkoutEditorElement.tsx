@@ -9,9 +9,14 @@ export interface EditorElementProps {
     duration: number;
     color: string;
     height: number;
+    offsetTop: number;
+    swapIndex: number;
+    swapHighlight: boolean;
     onDurationChange(id: string, diff: number): void;
-    onPositionChange(id: string, diff: number): void;
+    onPositionChange(id: string, clientY: number): void;
+    onPositionUpdate(id: string, clientY: number): void;
     onColorChange(id: string): void;
+    updateOffsetTop(id: string, offsetTop: number): void;
 }
 
 interface State {
@@ -28,14 +33,11 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps> {
     constructor(props: EditorElementProps) {
         super(props);
         this.state = {
-            initDragPos: { x: 0, y: 0 },
+            initDragPos: new Point(),
             dragDirection: DragDirection.NONE,
-            position: {
-                x: 0,
-                y: 0,
-            },
+            position: new Point(),
             startTime: null,
-            lastUpdatePosition: { x: 0, y: 0 },
+            lastUpdatePosition: new Point(),
         };
     }
     dragThreshold = {
@@ -44,28 +46,29 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps> {
     };
 
     reset = () => {
+        this.container.current?.classList.remove('return');
+
         this.setState({
-            initDragPos: { x: -1, y: -1 },
+            initDragPos: new Point(-1, -1),
             dragDirection: DragDirection.NONE,
-            position: {
-                x: 0,
-                y: 0,
-            },
+            position: new Point(),
         });
     };
 
     componentDidUpdate(prevProps: any) {
+        if (prevProps.id !== this.props.id) return;
         if (prevProps.height !== this.props.height) {
             this.container.current?.classList.add('show-duration');
         }
+        this.updateOffset();
     }
 
-    updatePosition = (): void => {
+    updatePosition = (clientPosition?: Point): void => {
         const now = Date.now();
         const elapsed = now - this.state.startTime!;
         const interval = 1000 / 60;
         const diffX = this.state.lastUpdatePosition.x - this.state.position.x;
-        const diffY = this.state.lastUpdatePosition.y - this.state.position.y;
+        // const diffY = this.state.lastUpdatePosition.y - this.state.position.y;
 
         const shouldUpdateDuration = elapsed > interval && this.isHorizontalDrag;
         const shouldUpdatePosition = elapsed > interval && this.isVerticalDrag;
@@ -73,27 +76,58 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps> {
         if (shouldUpdateDuration) {
             this.props.onDurationChange(this.props.id, diffX);
         } else if (shouldUpdatePosition) {
-            this.props.onPositionChange(this.props.id, diffY);
+            this.container.current!.style.transform = `translateY(${this.state.position.y}px)`;
+            if (clientPosition) {
+                const { y: clientY } = clientPosition;
+                this.props.onPositionChange(this.props.id, clientY);
+            }
         }
         this.setState({
-            lastUpdatePosition: { x: this.state.position.x, y: this.state.position.y },
+            lastUpdatePosition: new Point(this.state.position.x, this.state.position.y),
         });
     };
 
     handleDragEnd = (): void => {
         const element = this.container.current;
+        this.reset();
         setTimeout(() => {
+            if (this.props.swapIndex !== -1) {
+                this.props.onPositionUpdate(this.props.id, this.props.swapIndex);
+                this.container.current!.style.transform = `translateY(0px)`;
+            } else {
+                this.playReturnAnimation();
+            }
+
             element?.classList.remove('show-duration');
+            element?.classList.remove('moving');
         }, 250);
+    };
+
+    onComponentDidMount() {
+        this.updateOffset();
+    }
+
+    updateOffset() {
+        const offsetTop = this.container.current?.offsetTop || 0;
+        this.props.updateOffsetTop(this.props.id, offsetTop);
+    }
+
+    playReturnAnimation = (): void => {
+        this.container.current!.style.transform = `translateY(0px)`;
+        this.container.current!.classList.add('return');
     };
 
     render() {
         const { name, duration, color, height = '#f3f3f3' } = this.props;
+        const swapHighlightClassname = this.props.swapHighlight ? 'swap-highlight' : '';
+        const moveClassname = this.isVerticalDrag ? 'moving' : '';
+
         return (
             <div
-                className="editor-element"
+                className={`editor-element ${swapHighlightClassname} ${moveClassname}`}
                 style={{ backgroundColor: `${color}`, height: `${height}px` }}
                 ref={this.container}
+                data-id={this.props.id}
             >
                 <p className="editor-element__name">{name}</p>
                 <p className="editor-element__duration">{height}</p>

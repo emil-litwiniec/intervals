@@ -1,8 +1,8 @@
 import React from 'react';
-import WorkoutListElement, { IWorkout } from '@/components/workoutListElement/WorkoutListElement';
+import WorkoutListElement, { WorkoutProps } from '@/components/workoutListElement/WorkoutListElement';
 import './_workoutsList.scss';
 
-const workouts: IWorkout[] = [
+const workouts: WorkoutProps[] = [
     {
         workoutId: 5632,
         workoutName: 'Fast One',

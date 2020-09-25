@@ -22,6 +22,7 @@ export abstract class DraggableComponentBase<P> extends React.PureComponent<P, S
         this.container?.current?.addEventListener('touchstart', this.handleTouchStart);
         this.container?.current?.addEventListener('touchend', this.handleTouchEnd);
         this.container?.current?.addEventListener('touchmove', this.handleTouchMove);
+        this.onComponentDidMount();
     }
 
     componentWillUnmount() {
@@ -32,7 +33,8 @@ export abstract class DraggableComponentBase<P> extends React.PureComponent<P, S
         this.container.current?.removeEventListener('touchmove', this.handleTouchMove);
     }
 
-    abstract updatePosition(): void;
+    onComponentDidMount(): void {}
+    abstract updatePosition(clientPosition?: Point): void;
     abstract handleDragEnd(): void;
     abstract render(): ReactNode;
     abstract reset(): void;
@@ -134,7 +136,6 @@ export abstract class DraggableComponentBase<P> extends React.PureComponent<P, S
     };
 
     preventAndUpdatePosition = (event: Event, clientX: number, clientY: number) => {
-        if (!this.isHorizontalDrag) return;
         event.stopPropagation();
         event.preventDefault();
 
@@ -144,16 +145,17 @@ export abstract class DraggableComponentBase<P> extends React.PureComponent<P, S
                 y: clientY - state.initDragPos.y,
             },
         }));
-        this.update();
+        const clientPosition = new Point(clientX, clientY);
+        this.update(clientPosition);
     };
 
-    update = () => {
+    update = (clientPosition?: Point) => {
         if (this.requestAnimationFrame) return;
 
         this.requestAnimationFrame = requestAnimationFrame(() => {
             this.requestAnimationFrame = null;
 
-            this.updatePosition();
+            this.updatePosition(clientPosition);
         });
     };
 }

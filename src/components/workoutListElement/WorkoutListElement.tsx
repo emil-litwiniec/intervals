@@ -6,26 +6,26 @@ import { IconPlay, IconEdit, IconDelete } from '@/misc/icons';
 import Button from '@/components/button/Button';
 import { formatSecondsToMinutes } from '@/utils/format';
 
-interface ISideListElement {
+interface SideListElement {
     classNameVariant: string;
     textContent: string;
     icon: ReactNode;
 }
 
-export interface IWorkout {
+export interface WorkoutProps {
     workoutId: number;
     workoutName: string;
     workoutDuration: number;
 }
 
-const WorkoutListElement: React.FC<IWorkout> = ({ workoutId, workoutName, workoutDuration }) => {
+const WorkoutListElement: React.FC<WorkoutProps> = ({ workoutId, workoutName, workoutDuration }) => {
     const history = useHistory();
 
     const createSwipeListSideElement = ({
         classNameVariant,
         textContent,
         icon,
-    }: ISideListElement) => {
+    }: SideListElement) => {
         return (
             <div
                 className={`workout-list-side-element workout-list-side-element--${classNameVariant}`}

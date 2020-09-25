@@ -18,6 +18,28 @@
         margin-left: 5rem;
     }
 
+    &.return {
+        transition: transform 0.25s ease-in-out;
+    }
+
+    &.swap-highlight {
+        transition: border-top 0.2s ease-in-out;
+        border-top: 4px solid gold;
+    }
+
+    &.moving {
+        border: 2px solid white;
+        border-radius: 5px;
+
+        .editor-element {
+            &__name {
+                opacity: 0;
+            }
+        }
+        background-color: rgba(0, 0, 0, 0.1) !important;
+        z-index: 150;
+    }
+
     & .editor-element__duration-change {
         position: absolute;
         z-index: 50;
