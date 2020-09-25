@@ -1,6 +1,7 @@
 import React from 'react';
 import DraggableComponentBase from '@/components/draggableComponentBase/DraggableComponentBase';
 import { DragDirection, Point } from '@/utils/drag';
+import { formatSecondsToMinutes } from '@/utils/format';
 import './_workoutEditorElement.scss';
 
 export interface EditorElementProps {
@@ -57,7 +58,7 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps> {
 
     componentDidUpdate(prevProps: any) {
         if (prevProps.id !== this.props.id) return;
-        if (prevProps.height !== this.props.height) {
+        if (prevProps.duration !== this.props.duration) {
             this.container.current?.classList.add('show-duration');
         }
         this.updateOffset();
@@ -68,12 +69,13 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps> {
         const elapsed = now - this.state.startTime!;
         const interval = 1000 / 60;
         const diffX = this.state.lastUpdatePosition.x - this.state.position.x;
-        // const diffY = this.state.lastUpdatePosition.y - this.state.position.y;
 
         const shouldUpdateDuration = elapsed > interval && this.isHorizontalDrag;
         const shouldUpdatePosition = elapsed > interval && this.isVerticalDrag;
+        const minimalDuration = 30;
+        const isDurationBelowMinimal = diffX < 0 && this.props.duration + diffX < minimalDuration;
 
-        if (shouldUpdateDuration) {
+        if (!isDurationBelowMinimal && shouldUpdateDuration) {
             this.props.onDurationChange(this.props.id, diffX);
         } else if (shouldUpdatePosition) {
             this.container.current!.style.transform = `translateY(${this.state.position.y}px)`;
@@ -118,24 +120,25 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps> {
     };
 
     render() {
-        const { name, duration, color, height = '#f3f3f3' } = this.props;
+        const { name, duration, color = '#f3f3f3', height } = this.props;
         const swapHighlightClassname = this.props.swapHighlight ? 'swap-highlight' : '';
         const moveClassname = this.isVerticalDrag ? 'moving' : '';
+        const style = { backgroundColor: color, height: `${height}%`, '--color': color };
 
         return (
             <div
                 className={`editor-element ${swapHighlightClassname} ${moveClassname}`}
-                style={{ backgroundColor: `${color}`, height: `${height}px` }}
+                style={style}
                 ref={this.container}
                 data-id={this.props.id}
             >
                 <p className="editor-element__name">{name}</p>
-                <p className="editor-element__duration">{height}</p>
+                <p className="editor-element__duration">{formatSecondsToMinutes(duration)}</p>
                 <div
                     className="editor-element__duration-change"
                     style={{ backgroundColor: `${color}` }}
                 >
-                    <p>{height}</p>
+                    <p>{formatSecondsToMinutes(duration)}</p>
                 </div>
             </div>
         );

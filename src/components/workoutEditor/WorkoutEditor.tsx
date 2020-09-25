@@ -5,6 +5,7 @@ import WorkoutEditorElement, {
 } from '@/components/workoutEditorElement/WorkoutEditorElement';
 import { v4 as uuidv4 } from 'uuid';
 import { mockEditorElements } from './mockData';
+import './_workoutEditor.scss';
 
 interface State {
     editorElements: EditorElementFromState[];
@@ -53,6 +54,24 @@ class WorkoutEditor extends React.Component<Props, State> {
         });
     }
 
+    calculateProportions = () => {
+        const durationSum = this.state.editorElements.reduce((acc, curr): any => {
+            return { duration: acc.duration + curr.duration };
+        }).duration;
+
+        const calcPercentage = (duration: number): number => {
+            return 100 / (durationSum / duration);
+        };
+
+        this.setState((state) => ({
+            ...state,
+            editorElements: state.editorElements.map((el) => ({
+                ...el,
+                height: calcPercentage(el.duration),
+            })),
+        }));
+    };
+
     updateAllReferences = () => {
         this.references.forEach((ref) => {
             ref.current?.updateOffset();
@@ -62,10 +81,11 @@ class WorkoutEditor extends React.Component<Props, State> {
     onDurationChange = (id: string, diff: number) => {
         this.udpateEditorElementsState((element) => {
             if (element.id === id) {
-                element.height = element.height + diff;
+                element.duration = element.duration + diff;
             }
         });
 
+        this.calculateProportions();
         this.updateAllReferences();
     };
 
@@ -178,7 +198,7 @@ class WorkoutEditor extends React.Component<Props, State> {
 
     render() {
         return (
-            <section>
+            <section className="workout-editor">
                 {this.editorElements}
                 <Button handleClick={this.addEmptyElement}>Add element</Button>
             </section>

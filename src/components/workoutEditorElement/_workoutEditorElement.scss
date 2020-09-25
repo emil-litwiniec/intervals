@@ -1,11 +1,22 @@
 @import '../../styles/variables';
 
 .editor-element {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
     z-index: 10;
+
+    &::after {
+        position: absolute;
+        top: -4px;
+        height: 6px;
+        content: '';
+        width: 100%;
+        background-color: var(--color);
+        transition: background-color 0.2s ease-in-out;
+    }
 
     &__name {
         color: white;
@@ -23,13 +34,18 @@
     }
 
     &.swap-highlight {
-        transition: border-top 0.2s ease-in-out;
-        border-top: 4px solid gold;
+        &::after {
+            background-color: goldenrod;
+        }
     }
 
     &.moving {
         border: 2px solid white;
         border-radius: 5px;
+
+        &::after {
+            opacity: 0;
+        }
 
         .editor-element {
             &__name {
