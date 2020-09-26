@@ -9,7 +9,7 @@ interface State {
     lastUpdatePosition: Point;
 }
 
-export abstract class DraggableComponentBase<P> extends React.PureComponent<P, State> {
+export abstract class DraggableComponentBase<P, S = {}> extends React.PureComponent<P, State & S> {
     container: RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
     requestAnimationFrame: number | null = null;
     dragThreshold = {
@@ -76,7 +76,10 @@ export abstract class DraggableComponentBase<P> extends React.PureComponent<P, S
             this.dragThreshold
         );
 
-        this.setState({ dragDirection: dragDirection });
+        this.setState({
+            ...this.state,
+            dragDirection: dragDirection,
+        });
     };
 
     handleMouseMove = (event: MouseEvent) => {
@@ -99,6 +102,7 @@ export abstract class DraggableComponentBase<P> extends React.PureComponent<P, S
         const { clientX, clientY } = event;
         this.reset();
         this.setState({
+            ...this.state,
             initDragPos: { x: clientX, y: clientY },
             startTime: Date.now(),
         });
@@ -140,6 +144,7 @@ export abstract class DraggableComponentBase<P> extends React.PureComponent<P, S
         event.preventDefault();
 
         this.setState((state) => ({
+            ...state,
             position: {
                 x: clientX - state.initDragPos.x,
                 y: clientY - state.initDragPos.y,

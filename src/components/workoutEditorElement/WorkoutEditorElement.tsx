@@ -1,10 +1,12 @@
-import React, { SyntheticEvent } from 'react';
+import React, { CSSProperties, SyntheticEvent } from 'react';
 import DraggableComponentBase from '@/components/draggableComponentBase/DraggableComponentBase';
 import { DragDirection, Point } from '@/utils/drag';
 import { formatSecondsToMinutes } from '@/utils/format';
 import './_workoutEditorElement.scss';
 import { IconColorFill, IconDelete } from '@/misc/icons';
 import Button from '@/components/button/Button';
+
+import { ColorResult, CirclePicker } from 'react-color';
 
 export interface EditorElementProps {
     id: string;
@@ -18,12 +20,12 @@ export interface EditorElementProps {
     onDurationChange(id: string, diff: number): void;
     onPositionChange(id: string, clientY: number): void;
     onPositionUpdate(id: string, clientY: number): void;
-    onColorChange(id: string, event: SyntheticEvent): void;
+    onColorChange(id: string, newColor: ColorResult, event?: SyntheticEvent): void;
     onDelete(id: string): void;
     updateOffsetTop(id: string, offsetTop: number): void;
 }
 
-interface State {
+interface DraggableComponentBaseState {
     initDragPos: Point;
     dragDirection: DragDirection;
     position: Point;
@@ -31,9 +33,11 @@ interface State {
     lastUpdatePosition: Point;
 }
 
-class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps> {
-    state: State;
+interface WorkoutEditorState extends DraggableComponentBaseState {
+    showPicker: boolean;
+}
 
+class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps, WorkoutEditorState> {
     constructor(props: EditorElementProps) {
         super(props);
         this.state = {
@@ -42,6 +46,7 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps> {
             position: new Point(),
             startTime: null,
             lastUpdatePosition: new Point(),
+            showPicker: false,
         };
     }
     dragThreshold = {
@@ -80,12 +85,14 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps> {
 
         if (!isDurationBelowMinimal && shouldUpdateDuration) {
             this.props.onDurationChange(this.props.id, diffX);
+            if (this.state.showPicker) this.setState({ showPicker: false });
         } else if (shouldUpdatePosition) {
             this.container.current!.style.transform = `translateY(${this.state.position.y}px)`;
             if (clientPosition) {
                 const { y: clientY } = clientPosition;
                 this.props.onPositionChange(this.props.id, clientY);
             }
+            if (this.state.showPicker) this.setState({ showPicker: false });
         }
         this.setState({
             lastUpdatePosition: new Point(this.state.position.x, this.state.position.y),
@@ -120,11 +127,25 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps> {
         this.container.current!.classList.add('return');
     };
 
+    togglePicker = (on?: boolean) => {
+        this.setState((state) => ({
+            ...state,
+            showPicker: on !== undefined ? on : !state.showPicker,
+        }));
+    };
+
     render() {
         const { name, duration, color = '#f3f3f3', height } = this.props;
         const swapHighlightClassname = this.props.swapHighlight ? 'swap-highlight' : '';
         const moveClassname = this.isVerticalDrag ? 'moving' : '';
-        const style = { backgroundColor: color, height: `${height}%`, '--color': color };
+        const style: CSSProperties & { '--color': string } = {
+            backgroundColor: color,
+            height: `${height}%`,
+            '--color': color,
+        };
+        if (this.state.showPicker) {
+            style.zIndex = 200;
+        }
 
         return (
             <div
@@ -134,10 +155,7 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps> {
                 data-id={this.props.id}
             >
                 <div className="editor-element__button-group">
-                    <Button
-                        handleClick={(event) => this.props.onColorChange(this.props.id, event)}
-                        variant="editor-element"
-                    >
+                    <Button handleClick={() => this.togglePicker()} variant="editor-element">
                         <IconColorFill className="editor-element__color" />
                     </Button>
                     <Button
@@ -146,6 +164,16 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps> {
                     >
                         <IconDelete className="editor-element__delete" />
                     </Button>
+
+                    {this.state.showPicker && (
+                        <CirclePicker
+                            color={this.props.color}
+                            onChange={(color: ColorResult) =>
+                                this.props.onColorChange(this.props.id, color)
+                            }
+                            className="editor-element__picker"
+                        />
+                    )}
                 </div>
                 <p className="editor-element__name">{name}</p>
                 <p className="editor-element__duration">{formatSecondsToMinutes(duration)}</p>

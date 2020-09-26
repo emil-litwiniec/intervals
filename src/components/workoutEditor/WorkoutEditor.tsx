@@ -6,6 +6,7 @@ import WorkoutEditorElement, {
 import { v4 as uuidv4 } from 'uuid';
 import { mockEditorElements } from './mockData';
 import './_workoutEditor.scss';
+import { ColorResult } from 'react-color';
 
 interface State {
     editorElements: EditorElementFromState[];
@@ -156,8 +157,12 @@ class WorkoutEditor extends React.Component<Props, State> {
         );
     };
 
-    onColorChange = (id: string) => {
-        console.log('onColorChange()');
+    onColorChange = (id: string, color: ColorResult) => {
+        this.udpateEditorElementsState((element) => {
+            if (element.id === id) {
+                element.color = color.hex;
+            }
+        })
     };
 
     onDelete = (id: string) => {
@@ -222,6 +227,7 @@ class WorkoutEditor extends React.Component<Props, State> {
     render() {
         return (
             <section className="workout-editor">
+                
                 {this.editorElements}
                 <Button handleClick={this.addEmptyElement}>Add element</Button>
             </section>

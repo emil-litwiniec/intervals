@@ -10,12 +10,11 @@
 
     &::after {
         position: absolute;
-        top: -4px;
-        height: 6px;
+        top: -1px;
+        height: 1px;
         content: '';
         width: 100%;
         background-color: var(--color);
-        transition: background-color 0.2s ease-in-out;
     }
 
     &__name {
@@ -37,6 +36,35 @@
         justify-content: space-evenly;
     }
 
+    &__picker {
+        position: absolute;
+        right: 7rem;
+        top: 4rem;
+        z-index: 200;
+        width: unset !important;
+        flex-wrap: unset !important;
+        margin: 0 !important;
+        padding: 2rem;
+        background-color: $color-off-white;
+        border-radius: 1rem;
+
+        display: grid !important;
+        gap: 1rem;
+        grid-template-columns: repeat(6, 1fr);
+
+        .editor-element {
+            z-index: 200;
+        }
+
+        & span div {
+            margin: 0 !important;
+        }
+
+        & span div span div {
+            border-radius: 5px !important;
+        }
+    }
+
     & .button--editor-element {
         z-index: 100;
 
@@ -54,6 +82,8 @@
     &.swap-highlight {
         &::after {
             background-color: goldenrod;
+            transition: background-color 0.2s ease-in-out;
+            height: 3px;
         }
     }
 
