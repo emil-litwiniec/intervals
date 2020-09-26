@@ -29,6 +29,24 @@
         margin-left: 5rem;
     }
 
+    &__button-group {
+        position: absolute;
+        top: 0;
+        right: 0;
+        display: flex;
+        justify-content: space-evenly;
+    }
+
+    & .button--editor-element {
+        z-index: 100;
+
+        .icon {
+            width: 2rem;
+            height: 2rem;
+            margin: 1rem 2rem;
+        }
+    }
+
     &.return {
         transition: transform 0.25s ease-in-out;
     }

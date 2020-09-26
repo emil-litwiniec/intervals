@@ -12,7 +12,7 @@ const IconDelete: React.FC<Props> = ({ color = '#f3f3f3', className = 'icon-dele
             focusable="false"
             data-prefix="far"
             data-icon="trash-alt"
-            className={className}
+            className={'icon ' + className}
             role="img"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 448 512"

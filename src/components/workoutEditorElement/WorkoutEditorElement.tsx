@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { SyntheticEvent } from 'react';
 import DraggableComponentBase from '@/components/draggableComponentBase/DraggableComponentBase';
 import { DragDirection, Point } from '@/utils/drag';
 import { formatSecondsToMinutes } from '@/utils/format';
 import './_workoutEditorElement.scss';
+import { IconColorFill, IconDelete } from '@/misc/icons';
+import Button from '@/components/button/Button';
 
 export interface EditorElementProps {
     id: string;
@@ -16,7 +18,8 @@ export interface EditorElementProps {
     onDurationChange(id: string, diff: number): void;
     onPositionChange(id: string, clientY: number): void;
     onPositionUpdate(id: string, clientY: number): void;
-    onColorChange(id: string): void;
+    onColorChange(id: string, event: SyntheticEvent): void;
+    onDelete(id: string): void;
     updateOffsetTop(id: string, offsetTop: number): void;
 }
 
@@ -92,17 +95,15 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps> {
     handleDragEnd = (): void => {
         const element = this.container.current;
         this.reset();
-        setTimeout(() => {
-            if (this.props.swapIndex !== -1) {
-                this.props.onPositionUpdate(this.props.id, this.props.swapIndex);
-                this.container.current!.style.transform = `translateY(0px)`;
-            } else {
-                this.playReturnAnimation();
-            }
+        if (this.props.swapIndex !== -1) {
+            this.props.onPositionUpdate(this.props.id, this.props.swapIndex);
+            this.container.current!.style.transform = `translateY(0px)`;
+        } else {
+            this.playReturnAnimation();
+        }
 
-            element?.classList.remove('show-duration');
-            element?.classList.remove('moving');
-        }, 250);
+        element?.classList.remove('show-duration');
+        element?.classList.remove('moving');
     };
 
     onComponentDidMount() {
@@ -132,6 +133,20 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps> {
                 ref={this.container}
                 data-id={this.props.id}
             >
+                <div className="editor-element__button-group">
+                    <Button
+                        handleClick={(event) => this.props.onColorChange(this.props.id, event)}
+                        variant="editor-element"
+                    >
+                        <IconColorFill className="editor-element__color" />
+                    </Button>
+                    <Button
+                        handleClick={(event) => this.props.onDelete(this.props.id)}
+                        variant="editor-element"
+                    >
+                        <IconDelete className="editor-element__delete" />
+                    </Button>
+                </div>
                 <p className="editor-element__name">{name}</p>
                 <p className="editor-element__duration">{formatSecondsToMinutes(duration)}</p>
                 <div

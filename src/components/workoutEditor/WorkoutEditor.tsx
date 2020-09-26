@@ -18,6 +18,7 @@ type EditorElementFromState = Omit<
     | 'onPositionUpdate'
     | 'onColorChange'
     | 'updateOffsetTop'
+    | 'onDelete'
 >;
 
 interface Props {}
@@ -46,12 +47,17 @@ class WorkoutEditor extends React.Component<Props, State> {
                     onPositionChange={this.onPositionChange}
                     onPositionUpdate={this.onPositionUpdate}
                     onColorChange={this.onColorChange}
+                    onDelete={this.onDelete}
                     updateOffsetTop={this.updateOffsetTop}
                     ref={newRef}
                     {...element}
                 />
             );
         });
+    }
+
+    componentDidMount() {
+        this.calculateProportions();
     }
 
     calculateProportions = () => {
@@ -79,14 +85,17 @@ class WorkoutEditor extends React.Component<Props, State> {
     };
 
     onDurationChange = (id: string, diff: number) => {
-        this.udpateEditorElementsState((element) => {
-            if (element.id === id) {
-                element.duration = element.duration + diff;
+        this.udpateEditorElementsState(
+            (element) => {
+                if (element.id === id) {
+                    element.duration = element.duration + diff;
+                }
+            },
+            () => {
+                this.calculateProportions();
+                this.updateAllReferences();
             }
-        });
-
-        this.calculateProportions();
-        this.updateAllReferences();
+        );
     };
 
     onPositionChange = (id: string, clientY: number) => {
@@ -129,20 +138,41 @@ class WorkoutEditor extends React.Component<Props, State> {
             value: EditorElementFromState,
             index: number,
             array: EditorElementFromState[]
-        ) => void
+        ) => void,
+        afterSetStateCallback?: () => void
     ) => {
-        this.setState((state) => {
-            const newEditorElements = [...state.editorElements];
-            newEditorElements.forEach(callback);
-            return {
-                ...state,
-                editorElements: newEditorElements,
-            };
-        });
+        this.setState(
+            (state) => {
+                const newEditorElements = [...state.editorElements];
+                newEditorElements.forEach(callback);
+                return {
+                    ...state,
+                    editorElements: newEditorElements,
+                };
+            },
+            () => {
+                if (afterSetStateCallback) afterSetStateCallback();
+            }
+        );
     };
 
     onColorChange = (id: string) => {
         console.log('onColorChange()');
+    };
+
+    onDelete = (id: string) => {
+        const referenceIndex = this.references.findIndex((el) => el.current?.props.id === id);
+        this.references.splice(referenceIndex, 1);
+        this.setState((state) => {
+            const newEditorElements = [...state.editorElements];
+            const elementIndex = newEditorElements.findIndex((el) => el.id === id);
+            newEditorElements.splice(elementIndex, 1);
+
+            return {
+                ...state,
+                editorElements: newEditorElements,
+            };
+        }, this.calculateProportions);
     };
 
     updateOffsetTop = (id: string, offsetTop: number) => {
@@ -167,14 +197,12 @@ class WorkoutEditor extends React.Component<Props, State> {
                 ...state,
                 editorElements: newEditorElements,
             };
-        });
-
-        this.updateAllReferences();
+        }, this.updateAllReferences);
     };
 
     addEmptyElement = () => {
         this.setState((state) => {
-            const newElement: EditorElementProps = {
+            const newElement: EditorElementFromState = {
                 duration: 30,
                 name: 'Empty Interval',
                 color: 'cornflowerblue',
@@ -183,17 +211,12 @@ class WorkoutEditor extends React.Component<Props, State> {
                 swapIndex: -1,
                 swapHighlight: false,
                 offsetTop: 0,
-                onDurationChange: this.onDurationChange,
-                onPositionChange: this.onPositionChange,
-                onPositionUpdate: this.onPositionUpdate,
-                onColorChange: this.onColorChange,
-                updateOffsetTop: this.updateOffsetTop,
             };
             return {
                 ...state,
                 editorElements: [...state.editorElements, newElement],
             };
-        });
+        }, this.calculateProportions);
     };
 
     render() {
