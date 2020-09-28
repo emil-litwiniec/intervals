@@ -8,6 +8,8 @@ import Button from '@/components/button/Button';
 
 import { ColorResult, CirclePicker } from 'react-color';
 
+import TextInput from '@/components/textInput/TextInput';
+
 export interface EditorElementProps {
     id: string;
     name: string;
@@ -23,6 +25,7 @@ export interface EditorElementProps {
     onColorChange(id: string, newColor: ColorResult, event?: SyntheticEvent): void;
     onDelete(id: string): void;
     updateOffsetTop(id: string, offsetTop: number): void;
+    onTextInputUpdate(id: string, value: string): void;
 }
 
 interface DraggableComponentBaseState {
@@ -35,6 +38,7 @@ interface DraggableComponentBaseState {
 
 interface WorkoutEditorState extends DraggableComponentBaseState {
     showPicker: boolean;
+    inputFocused: boolean;
 }
 
 class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps, WorkoutEditorState> {
@@ -47,6 +51,7 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps, Wo
             startTime: null,
             lastUpdatePosition: new Point(),
             showPicker: false,
+            inputFocused: false,
         };
     }
     dragThreshold = {
@@ -73,6 +78,8 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps, Wo
     }
 
     updatePosition = (clientPosition?: Point): void => {
+        if (this.state.inputFocused) return;
+
         const now = Date.now();
         const elapsed = now - this.state.startTime!;
         const interval = 1000 / 60;
@@ -134,6 +141,16 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps, Wo
         }));
     };
 
+    onTextInputUpdate = (value: string) => {
+        this.props.onTextInputUpdate(this.props.id, value);
+    };
+
+    onInputFocusChange = (isFocused: boolean) => [
+        this.setState({
+            inputFocused: isFocused,
+        }),
+    ];
+
     render() {
         const { name, duration, color = '#f3f3f3', height } = this.props;
         const swapHighlightClassname = this.props.swapHighlight ? 'swap-highlight' : '';
@@ -167,7 +184,7 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps, Wo
 
                     {this.state.showPicker && (
                         <CirclePicker
-                            color={this.props.color}
+                            color={color}
                             onChange={(color: ColorResult) =>
                                 this.props.onColorChange(this.props.id, color)
                             }
@@ -175,13 +192,22 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps, Wo
                         />
                     )}
                 </div>
-                <p className="editor-element__name">{name}</p>
-                <p className="editor-element__duration">{formatSecondsToMinutes(duration)}</p>
+                {/* <p className="editor-element__name no-select">{name}</p> */}
+
+                <TextInput
+                    classNameVariant="editor-element"
+                    value={name}
+                    onTextInputUpdate={this.onTextInputUpdate}
+                    onFocusChange={this.onInputFocusChange}
+                />
+                <p className="editor-element__duration no-select">
+                    {formatSecondsToMinutes(duration)}
+                </p>
                 <div
-                    className="editor-element__duration-change"
+                    className="editor-element__duration-change no-select"
                     style={{ backgroundColor: `${color}` }}
                 >
-                    <p>{formatSecondsToMinutes(duration)}</p>
+                    <p className="no-select">{formatSecondsToMinutes(duration)}</p>
                 </div>
             </div>
         );

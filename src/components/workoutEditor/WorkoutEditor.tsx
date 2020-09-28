@@ -7,9 +7,14 @@ import { v4 as uuidv4 } from 'uuid';
 import { mockEditorElements } from './mockData';
 import './_workoutEditor.scss';
 import { ColorResult } from 'react-color';
+import TextInput from '../textInput/TextInput';
+import { Link } from 'react-router-dom';
+import { IconPlay } from '@/misc/icons';
 
 interface State {
     editorElements: EditorElementFromState[];
+    workoutName: string;
+    workoutId: string;
 }
 
 type EditorElementFromState = Omit<
@@ -20,6 +25,7 @@ type EditorElementFromState = Omit<
     | 'onColorChange'
     | 'updateOffsetTop'
     | 'onDelete'
+    | 'onTextInputUpdate'
 >;
 
 interface Props {}
@@ -33,6 +39,8 @@ class WorkoutEditor extends React.Component<Props, State> {
         super(props);
         this.state = {
             editorElements: [...mockEditorElements],
+            workoutName: 'New Workout',
+            workoutId: uuidv4(),
         };
     }
 
@@ -50,6 +58,7 @@ class WorkoutEditor extends React.Component<Props, State> {
                     onColorChange={this.onColorChange}
                     onDelete={this.onDelete}
                     updateOffsetTop={this.updateOffsetTop}
+                    onTextInputUpdate={this.onTextInputUpdate}
                     ref={newRef}
                     {...element}
                 />
@@ -162,7 +171,7 @@ class WorkoutEditor extends React.Component<Props, State> {
             if (element.id === id) {
                 element.color = color.hex;
             }
-        })
+        });
     };
 
     onDelete = (id: string) => {
@@ -224,12 +233,42 @@ class WorkoutEditor extends React.Component<Props, State> {
         }, this.calculateProportions);
     };
 
+    onTextInputUpdate = (id: string, value: string) => {
+        this.udpateEditorElementsState((el) => {
+            if (el.id === id) {
+                el.name = value;
+            }
+        });
+    };
+
+    onWorkoutNameUpdate = (value: string) => {
+        this.setState((state) => ({
+            ...state,
+            workoutName: value,
+        }));
+    };
+
     render() {
         return (
             <section className="workout-editor">
-                
-                {this.editorElements}
-                <Button handleClick={this.addEmptyElement}>Add element</Button>
+                <div className="workout-editor__elements">{this.editorElements}</div>
+                <div className="workout-editor__button-wrapper">
+                    <Button handleClick={this.addEmptyElement}>
+                        <div>Add interval</div>
+                    </Button>
+                    <TextInput
+                        value={this.state.workoutName}
+                        onTextInputUpdate={this.onWorkoutNameUpdate}
+                        label="Workout Title: "
+                        classNameVariant="editor-element"
+                    />
+                    <Link
+                        className="workout-editor__play-btn"
+                        to={{ pathname: `workout/${this.state.workoutId}` }}
+                    >
+                        <IconPlay />
+                    </Link>
+                </div>
             </section>
         );
     }

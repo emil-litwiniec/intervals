@@ -1,0 +1,37 @@
+@import '../../styles/variables';
+
+.text-input {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    input {
+        background: none;
+        font-size: 2rem;
+        text-align: center;
+        color: $color-off-white;
+        border: none;
+    }
+
+    &--editor-element {
+        position: relative;
+
+        input {
+            z-index: 60;
+            transition: transform 0.15s ease-in;
+
+            &:hover,
+            &:focus,
+            &:focus-within,
+            &:active {
+                transform: scale(1.1);
+            }
+        }
+
+        label {
+            position: absolute;
+            color: $color-off-white;
+            top: -4rem;
+            font-size: 1.6rem;
+        }
+    }
+}

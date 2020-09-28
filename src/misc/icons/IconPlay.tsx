@@ -8,7 +8,7 @@ type Props = {
 const IconPlay: React.FC<Props> = ({ color = '#f3f3f3', className = 'icon-play' }) => {
     return (
         <svg
-            className={className}
+            className={'icon ' + className}
             width="55"
             height="62"
             viewBox="0 0 55 62"

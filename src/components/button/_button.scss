@@ -2,27 +2,33 @@
 
 .button {
     &__container > * {
-        transition: transform 0.15s ease-in-out;
+        transition: transform 0.1s ease-in-out;
     }
 
     &:hover .button__container > * {
         transform: scale(1.2);
     }
 
+    &:active .button__container > *,
+    &:focus .button__container > * {
+        transform: scale(1.2) translateY(2px);
+    }
+
     &--play {
         &:active .button__container > * {
-            transform: scale(1.2) translateX(1rem);
+            transform: translateX(1rem);
         }
     }
 
     &--start-workout {
         position: relative;
 
-        &:focus, &:visited {
+        &:focus,
+        &:visited {
             transform: scale(1.2);
         }
 
-        div {
+        * {
             font-size: 3rem;
             color: $color-off-white;
         }
@@ -41,7 +47,7 @@
         border-radius: 100%;
         animation: 1s ease-in-out expandDimensions;
         background-color: var(--expand-color);
-        opacity: .7;
+        opacity: 0.7;
     }
 }
 

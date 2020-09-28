@@ -26,6 +26,7 @@
         color: white;
         font-size: 1.8rem;
         margin-left: 5rem;
+        margin-top: 2px;
     }
 
     &__button-group {
@@ -106,7 +107,7 @@
 
     & .editor-element__duration-change {
         position: absolute;
-        z-index: 50;
+        z-index: 70;
         top: 0;
         left: 0;
         right: 0;
@@ -114,7 +115,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-
+        pointer-events: none;
         transition: opacity 0.2s ease-in-out;
 
         opacity: 0;
