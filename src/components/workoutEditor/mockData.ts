@@ -45,4 +45,38 @@ export const mockEditorElements = [
         index: 3,
         swapHighlight: false,
     },
-]
+];
+
+
+// const mockWorkoutData = {
+//     title: 'SomeTitle',
+//     totalDuration: 4500,
+//     repeat: 1,
+//     pattern: [
+//         {
+//             mainTitle: "High Interval",
+//             subSectionTitles: [
+//                 'Push-ups', 'Sit-ups'
+//             ],
+//             duration: 30,
+//             color: '#f3f3f3'
+//         },
+//         {
+//             mainTitle: "Rest",
+//             subSectionTitles: [
+//             ],
+//             duration: 30,
+//             color: 'red'
+//         }
+//     ],
+//     startInterval: {
+//         mainTitle: "Warm up",
+//         duration: 30,
+//         color: '#f3f3f3'
+//     },
+//     endInterval: {
+//         mainTitle: "Cool down",
+//         duration: 30,
+//         color: '#f3f3f3'
+//     },
+// }

@@ -1,4 +1,4 @@
-import React, { RefObject, useRef } from 'react';
+import React from 'react';
 import './_startWorkout.scss';
 import { useHistory } from 'react-router-dom';
 import ExpandButton from '@/components/button/ExpandButton';

@@ -1,14 +1,13 @@
-import { current } from '@reduxjs/toolkit';
 import React, { FormEvent, SyntheticEvent, useRef, useState, useEffect, RefObject } from 'react';
 import './_textInput.scss';
 
-interface TextInputProps {
+type TextInputProps = {
     value: string;
     onTextInputUpdate(value: string): void;
     onFocusChange?(isFocused: boolean): void;
     classNameVariant?: string;
     label?: string;
-}
+};
 
 const TextInput: React.FC<TextInputProps> = ({
     value,

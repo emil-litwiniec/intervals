@@ -10,7 +10,7 @@ import { ColorResult, CirclePicker } from 'react-color';
 
 import TextInput from '@/components/textInput/TextInput';
 
-export interface EditorElementProps {
+export type EditorElementProps = {
     id: string;
     name: string;
     duration: number;
@@ -26,20 +26,20 @@ export interface EditorElementProps {
     onDelete(id: string): void;
     updateOffsetTop(id: string, offsetTop: number): void;
     onTextInputUpdate(id: string, value: string): void;
-}
+};
 
-interface DraggableComponentBaseState {
+type DraggableComponentBaseState = {
     initDragPos: Point;
     dragDirection: DragDirection;
     position: Point;
     startTime: number | null;
     lastUpdatePosition: Point;
-}
+};
 
-interface WorkoutEditorState extends DraggableComponentBaseState {
+type WorkoutEditorState = DraggableComponentBaseState & {
     showPicker: boolean;
     inputFocused: boolean;
-}
+};
 
 class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps, WorkoutEditorState> {
     constructor(props: EditorElementProps) {

@@ -11,11 +11,11 @@ import TextInput from '../textInput/TextInput';
 import { Link } from 'react-router-dom';
 import { IconPlay } from '@/misc/icons';
 
-interface State {
+type State = {
     editorElements: EditorElementFromState[];
     workoutName: string;
     workoutId: string;
-}
+};
 
 type EditorElementFromState = Omit<
     EditorElementProps,
@@ -28,14 +28,12 @@ type EditorElementFromState = Omit<
     | 'onTextInputUpdate'
 >;
 
-interface Props {}
-
-class WorkoutEditor extends React.Component<Props, State> {
+class WorkoutEditor extends React.Component<{}, State> {
     state: State;
 
     references: RefObject<WorkoutEditorElement>[] = [];
 
-    constructor(props: Props) {
+    constructor(props: {}) {
         super(props);
         this.state = {
             editorElements: [...mockEditorElements],

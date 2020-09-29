@@ -3,15 +3,15 @@ import { DragDirection, Point } from '@/utils/drag';
 import DraggableComponentBase from '@/components/draggableComponentBase/DraggableComponentBase';
 import './_swipeListElement.scss';
 
-interface Props {
+type Props = {
     leftElement: SwipeListSideElement;
     rightElement: SwipeListSideElement;
-}
+};
 
-interface SwipeListSideElement {
+type SwipeListSideElement = {
     content: ReactNode;
     handler: Function;
-}
+};
 
 class SwipeListElement extends DraggableComponentBase<Props> {
     leftElementRef: RefObject<HTMLDivElement>;
