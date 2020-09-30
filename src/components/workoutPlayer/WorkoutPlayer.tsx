@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 type WorkoutPlayerState = {
     seconds: number;
     id: string;
+    isTimerOn: boolean;
 };
 
 class WorkoutPlayer extends Component<{}, WorkoutPlayerState> {
@@ -14,17 +15,19 @@ class WorkoutPlayer extends Component<{}, WorkoutPlayerState> {
     constructor(props: {}) {
         super(props);
         this.state = {
-            seconds: 6,
+            seconds: 15,
             id: uuidv4(),
+            isTimerOn: false,
         };
     }
 
     onTimerFinished = () => {
         // TODO: trigger next workout interval
         this.setState({
-            seconds: 6,
+            seconds: 5,
             id: uuidv4(),
         });
+        this.startTimer();
     };
 
     setChildCallables = (callables: ChildCallables) => {
@@ -33,17 +36,16 @@ class WorkoutPlayer extends Component<{}, WorkoutPlayerState> {
 
     startTimer = () => {
         this.childCallables?.startTimer();
+        this.setState({ isTimerOn: true });
     };
     pauseTimer = () => {
         this.childCallables?.pauseTimer();
-    };
-
-    resumeTimer = () => {
-        this.childCallables?.resumeTimer();
+        this.setState({ isTimerOn: false });
     };
 
     resetTimer = () => {
         this.childCallables?.resetTimer();
+        this.setState({ isTimerOn: false });
     };
 
     render() {
@@ -54,10 +56,15 @@ class WorkoutPlayer extends Component<{}, WorkoutPlayerState> {
                     id={this.state.id}
                     onTimerFinished={this.onTimerFinished}
                     setCallables={this.setChildCallables}
+                    color={'coral'}
                 />
-                <Button handleClick={this.startTimer}>Start</Button>
-                <Button handleClick={this.pauseTimer}>Pause</Button>
-                <Button handleClick={this.resumeTimer}>Resume</Button>
+
+                {this.state.isTimerOn ? (
+                    <Button handleClick={this.pauseTimer}>Pause</Button>
+                ) : (
+                    <Button handleClick={this.startTimer}>Start</Button>
+                )}
+
                 <Button handleClick={this.resetTimer}>Reset</Button>
             </>
         );
