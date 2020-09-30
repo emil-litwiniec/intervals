@@ -1,33 +1,35 @@
 .timer-circle-display {
     svg {
-        width: 40rem;
-        height: 40rem;
+        width: 60rem;
+        height: 60rem;
         transform: rotate(-90deg);
 
         circle {
             fill: none;
-            stroke: #f0f0f0;
-            stroke-width: 1;
+            stroke: white;
+            opacity: 0.3;
+            stroke-width: 0.9;
             stroke-linecap: round;
 
             &.timer-circle-display__progress {
                 transition: stroke-dashoffset 0.2s;
                 stroke-dasharray: 100 100;
                 stroke-dashoffset: var(--offsetValue);
-                stroke: var(--strokeColor);
+                stroke: white;
+                opacity: 0.8;
 
-                &.finish {
+                &.highlight {
                     transition: none;
                 }
             }
 
             &.timer-circle-display__return {
                 transition: opacity 0.3s ease-in-out;
-                stroke: goldenrod;
-                stroke-width: 1.1;
+                stroke: white;
+                stroke-width: 1;
                 opacity: 0;
 
-                &.finish {
+                &.highlight {
                     opacity: 1;
                 }
             }

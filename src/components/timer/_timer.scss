@@ -1,0 +1,17 @@
+.timer {
+    &__wrapper {
+        position: relative;
+    }
+
+    &__text-display {
+        position: absolute;
+        font-size: 6rem;
+        color: white;
+        top: calc(50% + 5px);
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    &__circular-display {
+    }
+}

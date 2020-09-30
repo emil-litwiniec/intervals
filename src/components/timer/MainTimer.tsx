@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import TimerCircleDisplay from '@/components/timerCircleDisplay/TimerCircleDisplay';
 import { formatSecondsToMinutes } from '@/utils/format';
+import './_timer.scss';
 
 export type ChildCallables = {
     startTimer(): void;
@@ -13,7 +14,7 @@ type MainTimerProps = {
     onTimerFinished(): void;
     setCallables(childCallables: ChildCallables): void;
     id: string;
-    color: string;
+    className: string;
 };
 
 type MainTimerState = {
@@ -86,17 +87,18 @@ class MainTimer extends Component<MainTimerProps, MainTimerState> {
     };
 
     render() {
+        const parentClassName = this.props.className ? this.props.className : '';
         return (
-            <>
-                <p style={{ fontSize: '2rem', margin: '2rem' }}>
+            <div className={`timer__wrapper ${parentClassName}`}>
+                <p className="timer__text-display">
                     {formatSecondsToMinutes(Math.ceil(this.state.millisecondsLeft / 1000))}
                 </p>
                 <TimerCircleDisplay
                     milliseconds={this.props.initialSeconds * 1000 - this.state.millisecondsLeft}
                     total={this.props.initialSeconds * 1000}
-                    color={this.props.color}
+                    className="timer__circular-display"
                 />
-            </>
+            </div>
         );
     }
 }
