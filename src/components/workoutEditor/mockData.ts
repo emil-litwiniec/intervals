@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import { WorkoutsState } from '@/store/slices/workouts';
 
 export const mockEditorElements = [
     {
@@ -47,36 +48,71 @@ export const mockEditorElements = [
     },
 ];
 
-
-// const mockWorkoutData = {
-//     title: 'SomeTitle',
-//     totalDuration: 4500,
-//     repeat: 1,
-//     pattern: [
-//         {
-//             mainTitle: "High Interval",
-//             subSectionTitles: [
-//                 'Push-ups', 'Sit-ups'
-//             ],
-//             duration: 30,
-//             color: '#f3f3f3'
-//         },
-//         {
-//             mainTitle: "Rest",
-//             subSectionTitles: [
-//             ],
-//             duration: 30,
-//             color: 'red'
-//         }
-//     ],
-//     startInterval: {
-//         mainTitle: "Warm up",
-//         duration: 30,
-//         color: '#f3f3f3'
-//     },
-//     endInterval: {
-//         mainTitle: "Cool down",
-//         duration: 30,
-//         color: '#f3f3f3'
-//     },
-// }
+export const mockStoreWorkoutData: WorkoutsState = {
+    xs34: {
+        title: 'SomeTitle',
+        totalDuration: 4500,
+        iterations: 2,
+        pattern: [
+            {
+                id: 'xasda',
+                mainTitle: 'High Interval Cool',
+                subsectionTitles: ['Push-ups', 'Sit-ups'],
+                duration: 30,
+                color: 'coral',
+            },
+            {
+                id: 'sdawqq',
+                mainTitle: 'Rest',
+                subsectionTitles: [],
+                duration: 30,
+                color: 'red',
+            },
+        ],
+        startInterval: {
+            id: 'poqiwe',
+            mainTitle: 'Warm up',
+            duration: 30,
+            color: 'green',
+        },
+        endInterval: {
+            id: 'aposuipiojp',
+            mainTitle: 'Cool down',
+            duration: 30,
+            color: 'black',
+        },
+    },
+    pg423: {
+        title: 'SomeTitle',
+        totalDuration: 4500,
+        iterations: 1,
+        pattern: [
+            {
+                id: 'xasda',
+                mainTitle: 'High Interval',
+                subsectionTitles: ['Push-ups', 'Sit-ups'],
+                duration: 30,
+                color: '#f3f3f3',
+            },
+            {
+                id: 'sdawqq',
+                mainTitle: 'Rest',
+                subsectionTitles: [],
+                duration: 30,
+                color: 'red',
+            },
+        ],
+        startInterval: {
+            id: 'poqiwe',
+            mainTitle: 'Warm up',
+            duration: 30,
+            color: '#f3f3f3',
+        },
+        endInterval: {
+            id: 'aposuipiojp',
+            mainTitle: 'Cool down',
+            duration: 30,
+            color: '#f3f3f3',
+        },
+    },
+};
