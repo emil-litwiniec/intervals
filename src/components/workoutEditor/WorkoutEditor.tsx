@@ -262,7 +262,7 @@ class WorkoutEditor extends React.Component<{}, State> {
                     />
                     <Link
                         className="workout-editor__play-btn"
-                        to={{ pathname: `workout/${this.state.workoutId}` }}
+                        to={`/workout/${this.state.workoutId}`}
                     >
                         <IconPlay />
                     </Link>

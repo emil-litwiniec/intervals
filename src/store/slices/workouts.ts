@@ -6,17 +6,14 @@ export type Interval = {
     mainTitle: string;
     duration: number;
     color: string;
-};
-
-type SubsectionInterval = Interval & {
-    subsectionTitles: string[];
+    subsectionTitles?: string[];
 };
 
 export type WorkoutData = {
     title: string;
     totalDuration: number;
     iterations: number;
-    pattern: SubsectionInterval[];
+    pattern: Interval[];
     startInterval: Interval;
     endInterval: Interval;
 };

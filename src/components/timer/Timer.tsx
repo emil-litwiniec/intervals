@@ -9,22 +9,24 @@ export type ChildCallables = {
     resetTimer(): void;
 };
 
-type MainTimerProps = {
+type TimerProps = {
     initialSeconds: number;
     onTimerFinished(): void;
     setCallables(childCallables: ChildCallables): void;
     id: string;
     className: string;
+    circularDisplay?: boolean;
+    showMinutesLeft?: boolean;
 };
 
-type MainTimerState = {
+type TimerState = {
     isTimerPaused: boolean;
     millisecondsLeft: number;
 };
 
-class MainTimer extends Component<MainTimerProps, MainTimerState> {
+class Timer extends Component<TimerProps, TimerState> {
     timeout: NodeJS.Timeout | null = null;
-    constructor(props: MainTimerProps) {
+    constructor(props: TimerProps) {
         super(props);
 
         this.state = {
@@ -42,7 +44,7 @@ class MainTimer extends Component<MainTimerProps, MainTimerState> {
         });
     }
 
-    componentDidUpdate(prevProps: MainTimerProps) {
+    componentDidUpdate(prevProps: TimerProps) {
         if (prevProps.id !== this.props.id) {
             this.setState({ millisecondsLeft: this.props.initialSeconds * 1000 });
         }
@@ -88,19 +90,27 @@ class MainTimer extends Component<MainTimerProps, MainTimerState> {
 
     render() {
         const parentClassName = this.props.className ? this.props.className : '';
+        const { circularDisplay = false } = this.props;
+        const seconds = Math.ceil(this.state.millisecondsLeft / 1000);
+        const { showMinutesLeft: showMinsLeft } = this.props;
         return (
             <div className={`timer__wrapper ${parentClassName}`}>
-                <p className="timer__text-display">
-                    {formatSecondsToMinutes(Math.ceil(this.state.millisecondsLeft / 1000))}
-                </p>
-                <TimerCircleDisplay
-                    milliseconds={this.props.initialSeconds * 1000 - this.state.millisecondsLeft}
-                    total={this.props.initialSeconds * 1000}
-                    className="timer__circular-display"
-                />
+                <span className="timer__text-display">
+                    {showMinsLeft ? 'min' : formatSecondsToMinutes(seconds)}
+                </span>
+
+                {circularDisplay && (
+                    <TimerCircleDisplay
+                        milliseconds={
+                            this.props.initialSeconds * 1000 - this.state.millisecondsLeft
+                        }
+                        total={this.props.initialSeconds * 1000}
+                        className="timer__circular-display"
+                    />
+                )}
             </div>
         );
     }
 }
 
-export default MainTimer;
+export default Timer;

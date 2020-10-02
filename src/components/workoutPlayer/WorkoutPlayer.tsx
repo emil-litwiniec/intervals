@@ -1,114 +1,215 @@
 import React, { Component, CSSProperties } from 'react';
-import MainTimer, { ChildCallables } from '@/components/timer/MainTimer';
+import { connect } from 'react-redux';
+import Timer, { ChildCallables } from '@/components/timer/Timer';
 import Button from '@/components/button/Button';
+
 import { IconPlay, IconPause, IconReset, IconNext, IconPrev } from '@/misc/icons';
-import { v4 as uuidv4 } from 'uuid';
 import './_workoutPlayer.scss';
+import { currentWorkout, WorkoutData, Interval } from '@/store/slices/workouts';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 
 type WorkoutPlayerState = {
-    seconds: number;
-    id: string;
     isTimerOn: boolean;
-    color: string;
+    hasWorkoutFinished: boolean;
+    currentStepIndex: number;
 };
 
-class WorkoutPlayer extends Component<{}, WorkoutPlayerState> {
-    childCallables: ChildCallables | null = null;
+type WorkoutPlayerProps = RouteComponentProps & {
+    workout: WorkoutData | null;
+};
 
-    constructor(props: {}) {
+class WorkoutPlayer extends Component<WorkoutPlayerProps, WorkoutPlayerState> {
+    intervalTimerCallables: ChildCallables | null = null;
+    totalTimerCallables: ChildCallables | null = null;
+    componentDidMount() {}
+
+    constructor(props: WorkoutPlayerProps) {
         super(props);
         this.state = {
-            seconds: 15,
-            id: uuidv4(),
             isTimerOn: false,
-            color: '#525ec4',
+            currentStepIndex: 0,
+            hasWorkoutFinished: false,
         };
     }
 
-    onTimerFinished = () => {
-        // TODO: trigger next workout interval
-        this.handleNextInterval();
-        this.setState({
-            seconds: 18,
-            id: uuidv4(),
-        });
-        this.startTimer();
-    };
+    componentDidUpdate(prevProps: WorkoutPlayerProps, prevState: WorkoutPlayerState) {
+        const hasStepIndexChanged = prevState.currentStepIndex !== this.state.currentStepIndex;
+        if (hasStepIndexChanged) {
+            const isOverLastStepIndex = this.state.currentStepIndex > this.lastStepIndex;
+            this.setState({ hasWorkoutFinished: isOverLastStepIndex });
+            isOverLastStepIndex && setTimeout(() => this.props.history.replace('/'), 5000);
+        }
+    }
 
-    setChildCallables = (callables: ChildCallables) => {
-        this.childCallables = callables;
+    onTimerFinished = () => {
+        this.handleNextInterval();
+        if (this.currentInterval) this.startTimer();
     };
 
     startTimer = () => {
-        this.childCallables?.startTimer();
+        if (this.state.hasWorkoutFinished) return;
+        this.intervalTimerCallables?.startTimer();
+        this.totalTimerCallables?.startTimer();
         this.setState({ isTimerOn: true });
     };
 
     pauseTimer = () => {
-        this.childCallables?.pauseTimer();
+        this.intervalTimerCallables?.pauseTimer();
+        this.totalTimerCallables?.pauseTimer();
         this.setState({ isTimerOn: false });
     };
 
     resetTimer = () => {
-        this.childCallables?.resetTimer();
+        this.intervalTimerCallables?.resetTimer();
+        // TODO: reset for total timer
         this.setState({ isTimerOn: false });
     };
 
     handleNextInterval = () => {
-        console.log('should handle next interval');
-        this.setState({
-            color: 'coral',
-        });
+        // TODO: next for total timer
+        this.setState((state) => ({
+            currentStepIndex: state.currentStepIndex + 1,
+        }));
     };
 
     handlePreviousInterval = () => {
-        console.log('should handle previous interval');
-        this.setState({
-            color: 'cornflowerblue',
-        });
+        // TODO: prev for total timer
+        if (this.state.currentStepIndex === 0) return;
+        this.setState((state) => ({
+            currentStepIndex: state.currentStepIndex - 1,
+        }));
     };
 
+    get lastStepIndex() {
+        const workout = this.props.workout;
+        if (!workout) return 0;
+        const { iterations, pattern } = workout;
+        return pattern.length * iterations + 1;
+    }
+
+    get currentInterval(): Interval | null {
+        const stepIndex = this.state.currentStepIndex;
+        const workout = this.props.workout;
+        if (!workout) return null;
+        const { pattern } = workout;
+        const isValidStepIndex = stepIndex <= this.lastStepIndex && stepIndex >= 0;
+
+        switch (stepIndex) {
+            case 0:
+                return workout.startInterval;
+            case this.lastStepIndex:
+                return workout.endInterval;
+
+            default:
+                if (isValidStepIndex) {
+                    const subsectionIndex = (stepIndex - 1) % pattern.length;
+                    return pattern[subsectionIndex];
+                } else return null;
+        }
+    }
+
+    get currentIteration(): number {
+        const stepIndex = this.state.currentStepIndex;
+        const workout = this.props.workout;
+        if (!workout) return 0;
+        const { iterations } = workout;
+        const iteration = Math.floor((stepIndex - 1) / iterations);
+        return iteration;
+    }
+
     render() {
-        const style: CSSProperties = { backgroundColor: this.state.color };
-        return (
-            <div className="workout-player" style={style}>
-                <MainTimer
-                    initialSeconds={this.state.seconds}
-                    id={this.state.id}
+        const style: CSSProperties = {
+            backgroundColor: this.currentInterval ? this.currentInterval!.color : 'red',
+        };
+        const hiddenPreviousButtonClass = this.state.currentStepIndex === 0 ? 'hidden' : '';
+        const totalWorkoutTimer = !this.state.hasWorkoutFinished && (
+            <Timer
+                id="someString"
+                initialSeconds={this.props.workout!.totalDuration}
+                onTimerFinished={() => {}}
+                setCallables={(callables: ChildCallables) => (this.totalTimerCallables = callables)}
+                className="workout-player__total-timer"
+            />
+        );
+        const currentIntervalTimer = this.currentInterval && !this.state.hasWorkoutFinished && (
+            <>
+                <Timer
+                    initialSeconds={this.currentInterval!.duration}
+                    id={this.currentInterval!.id}
                     onTimerFinished={this.onTimerFinished}
-                    setCallables={this.setChildCallables}
+                    setCallables={(callables: ChildCallables) =>
+                        (this.intervalTimerCallables = callables)
+                    }
                     className="workout-player__timer"
+                    circularDisplay
                 />
                 <div className="workout-player__info">
-                    <h4 className="workout-player__interval-title">High Interval</h4>
-                    <h5 className="workout-player__subsection-title">Push-Ups</h5>
+                    {totalWorkoutTimer}
+
+                    <h4 className="workout-player__interval-title">
+                        {this.currentInterval!.mainTitle}
+                    </h4>
+                    <h5 className="workout-player__subsection-title">
+                        {this.currentInterval.subsectionTitles &&
+                            this.currentInterval.subsectionTitles[this.currentIteration]}
+                    </h5>
                 </div>
-                <div className="workout-player__controls">
-                    <Button handleClick={this.handlePreviousInterval}>
-                        <IconPrev className="workout-player__icon" />
-                    </Button>
+            </>
+        );
 
-                    {this.state.isTimerOn ? (
-                        <Button handleClick={this.pauseTimer}>
-                            <IconPause className="workout-player__icon" />
-                        </Button>
-                    ) : (
-                        <Button handleClick={this.startTimer}>
-                            <IconPlay className="workout-player__icon" />
-                        </Button>
-                    )}
+        const workoutFinished = this.state.hasWorkoutFinished && (
+            <div className="workout-player__finished">Workout has finished!</div>
+        );
 
-                    <Button handleClick={this.resetTimer}>
-                        <IconReset className="workout-player__icon" />
-                    </Button>
+        const playPauseButton = this.state.isTimerOn ? (
+            <Button handleClick={this.pauseTimer}>
+                <IconPause className="workout-player__icon" />
+            </Button>
+        ) : (
+            <Button handleClick={this.startTimer}>
+                <IconPlay className="workout-player__icon" />
+            </Button>
+        );
 
-                    <Button handleClick={this.handleNextInterval}>
-                        <IconNext className="workout-player__icon" />
-                    </Button>
-                </div>
+        const workoutControls = !this.state.hasWorkoutFinished && (
+            <div className="workout-player__controls">
+                <Button
+                    handleClick={this.handlePreviousInterval}
+                    additionalClassName={hiddenPreviousButtonClass}
+                >
+                    <IconPrev className="workout-player__icon" />
+                </Button>
+
+                {playPauseButton}
+
+                <Button handleClick={this.resetTimer}>
+                    <IconReset className="workout-player__icon" />
+                </Button>
+
+                <Button handleClick={this.handleNextInterval}>
+                    <IconNext className="workout-player__icon" />
+                </Button>
+            </div>
+        );
+
+        return (
+            <div className="workout-player" style={style}>
+                {this.props.workout ? (
+                    <>
+                        {workoutFinished}
+                        {currentIntervalTimer}
+                        {workoutControls}
+                    </>
+                ) : (
+                    <div className="workout-player__fallback">Oops! Workout doesn't exist...</div>
+                )}
             </div>
         );
     }
 }
 
-export default WorkoutPlayer;
+const mapStateToProps = (state: any) => ({
+    workout: currentWorkout(state, 'xs34'), // mock state key id
+});
+
+export default withRouter(connect(mapStateToProps)(WorkoutPlayer));

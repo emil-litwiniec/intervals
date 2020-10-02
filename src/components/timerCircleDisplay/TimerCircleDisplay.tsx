@@ -22,7 +22,17 @@ const TimerCircleDisplay: React.FC<TimerCircleDisplayProps> = ({
 
     return (
         <div className={`timer-circle-display ${className}`}>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 34 34">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="-8 -8 48 48">
+                <filter id="blurEffect">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="1" />
+                </filter>
+                <circle
+                    cx="16"
+                    cy="16"
+                    r="16"
+                    filter="url(#blurEffect)"
+                    className="timer-circle-display__shadow"
+                ></circle>
                 <circle
                     cx="16"
                     cy="16"

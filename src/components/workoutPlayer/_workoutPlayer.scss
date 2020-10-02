@@ -7,13 +7,21 @@
 
     &__controls {
         display: flex;
-        width: 100%;
         justify-content: space-between;
         flex: 1;
-        padding: 0 60rem;
+        width: 60rem;
+
+        .button {
+            transition: 0.4s ease-in-out;
+            &.hidden {
+                opacity: 0;
+                pointer-events: none;
+            }
+        }
     }
 
     &__info {
+        position: relative;
         flex-basis: 10%;
         width: 100%;
         justify-content: center;
@@ -39,6 +47,7 @@
     &__subsection-title {
         margin-top: 4rem;
         font-size: 6rem;
+        min-height: 6rem;
     }
 
     &__timer {
@@ -47,5 +56,24 @@
         display: flex;
         justify-content: center;
         align-items: center;
+    }
+
+    &__finished,
+    &__fallback {
+        font-size: 3.5rem;
+        color: white;
+        margin: auto;
+    }
+
+    &__total-timer {
+        position: absolute;
+        left: 50%;
+        top: -5rem;
+        transform: translateX(-15rem);
+
+        span {
+            opacity: 0.6;
+            font-size: 3.2rem;
+        }
     }
 }
