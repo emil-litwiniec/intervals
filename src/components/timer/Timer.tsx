@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import TimerCircleDisplay from '@/components/timerCircleDisplay/TimerCircleDisplay';
-import { formatSecondsToMinutes } from '@/utils/format';
+import { formatSecondsToMinutes, formatSecondsToMinutesLeftRounded } from '@/utils/format';
 import './_timer.scss';
 
 export type ChildCallables = {
     startTimer(): void;
     pauseTimer(): void;
     resetTimer(): void;
+    setMillisecondsLeft(seconds: number): void;
 };
 
 type TimerProps = {
@@ -41,6 +42,7 @@ class Timer extends Component<TimerProps, TimerState> {
             startTimer: this.start,
             pauseTimer: this.pause,
             resetTimer: this.reset,
+            setMillisecondsLeft: this.setMillisecondsLeft,
         });
     }
 
@@ -66,7 +68,7 @@ class Timer extends Component<TimerProps, TimerState> {
         this.clear();
         this.setState((state) => ({
             isTimerPaused: false,
-            millisecondsLeft: this.state.millisecondsLeft,
+            millisecondsLeft: state.millisecondsLeft,
         }));
 
         this.timeout = setInterval(() => {
@@ -83,6 +85,10 @@ class Timer extends Component<TimerProps, TimerState> {
         }, 50);
     };
 
+    setMillisecondsLeft = (seconds: number) => {
+        this.setState({ millisecondsLeft: seconds * 1000 });
+    };
+
     clear = () => {
         if (!this.timeout) return;
         clearInterval(this.timeout);
@@ -96,7 +102,9 @@ class Timer extends Component<TimerProps, TimerState> {
         return (
             <div className={`timer__wrapper ${parentClassName}`}>
                 <span className="timer__text-display">
-                    {showMinsLeft ? 'min' : formatSecondsToMinutes(seconds)}
+                    {showMinsLeft
+                        ? formatSecondsToMinutesLeftRounded(seconds)
+                        : formatSecondsToMinutes(seconds)}
                 </span>
 
                 {circularDisplay && (

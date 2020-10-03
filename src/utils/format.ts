@@ -9,3 +9,9 @@ export const formatSecondsToMinutes = (timeInSeconds: number): string => {
 
     return `${zeroBeforeMinutes}${minutes}:${secondsSection}`;
 };
+
+export const formatSecondsToMinutesLeftRounded = (timeInSeconds: number): string => {
+    const minutes = Math.ceil(timeInSeconds / 60);
+
+    return `${minutes} min left`;
+};

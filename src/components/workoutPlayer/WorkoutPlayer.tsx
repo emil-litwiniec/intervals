@@ -43,7 +43,7 @@ class WorkoutPlayer extends Component<WorkoutPlayerProps, WorkoutPlayerState> {
 
     onTimerFinished = () => {
         this.handleNextInterval();
-        if (this.currentInterval) this.startTimer();
+        if (this.getInterval(this.state.currentStepIndex)) this.startTimer();
     };
 
     startTimer = () => {
@@ -61,34 +61,34 @@ class WorkoutPlayer extends Component<WorkoutPlayerProps, WorkoutPlayerState> {
 
     resetTimer = () => {
         this.intervalTimerCallables?.resetTimer();
-        // TODO: reset for total timer
-        this.setState({ isTimerOn: false });
+        this.totalTimerCallables?.pauseTimer();
+        this.setState({ isTimerOn: false }, this.updateTotalTimer);
+    };
+
+    updateTotalTimer = () => {
+        this.totalTimerCallables?.setMillisecondsLeft(this.totalTimeLeftFromStep);
     };
 
     handleNextInterval = () => {
-        // TODO: next for total timer
-        this.setState((state) => ({
-            currentStepIndex: state.currentStepIndex + 1,
-        }));
+        this.setState(
+            (state) => ({
+                currentStepIndex: state.currentStepIndex + 1,
+            }),
+            this.updateTotalTimer
+        );
     };
 
     handlePreviousInterval = () => {
-        // TODO: prev for total timer
         if (this.state.currentStepIndex === 0) return;
-        this.setState((state) => ({
-            currentStepIndex: state.currentStepIndex - 1,
-        }));
+        this.setState(
+            (state) => ({
+                currentStepIndex: state.currentStepIndex - 1,
+            }),
+            this.updateTotalTimer
+        );
     };
 
-    get lastStepIndex() {
-        const workout = this.props.workout;
-        if (!workout) return 0;
-        const { iterations, pattern } = workout;
-        return pattern.length * iterations + 1;
-    }
-
-    get currentInterval(): Interval | null {
-        const stepIndex = this.state.currentStepIndex;
+    getInterval(stepIndex: number): Interval | null {
         const workout = this.props.workout;
         if (!workout) return null;
         const { pattern } = workout;
@@ -108,6 +108,22 @@ class WorkoutPlayer extends Component<WorkoutPlayerProps, WorkoutPlayerState> {
         }
     }
 
+    get totalTimeLeftFromStep() {
+        let totalTimeLeft = 0;
+        for (let i = this.state.currentStepIndex; i <= this.lastStepIndex; i++) {
+            const intervalDuration = this.getInterval(i)?.duration || 0;
+            totalTimeLeft += intervalDuration;
+        }
+        return totalTimeLeft;
+    }
+
+    get lastStepIndex() {
+        const workout = this.props.workout;
+        if (!workout) return 0;
+        const { iterations, pattern } = workout;
+        return pattern.length * iterations + 1;
+    }
+
     get currentIteration(): number {
         const stepIndex = this.state.currentStepIndex;
         const workout = this.props.workout;
@@ -118,24 +134,33 @@ class WorkoutPlayer extends Component<WorkoutPlayerProps, WorkoutPlayerState> {
     }
 
     render() {
+        const currentInterval = this.getInterval(this.state.currentStepIndex);
+
         const style: CSSProperties = {
-            backgroundColor: this.currentInterval ? this.currentInterval!.color : 'red',
+            backgroundColor: currentInterval ? currentInterval.color : 'red',
         };
+
         const hiddenPreviousButtonClass = this.state.currentStepIndex === 0 ? 'hidden' : '';
         const totalWorkoutTimer = !this.state.hasWorkoutFinished && (
-            <Timer
-                id="someString"
-                initialSeconds={this.props.workout!.totalDuration}
-                onTimerFinished={() => {}}
-                setCallables={(callables: ChildCallables) => (this.totalTimerCallables = callables)}
-                className="workout-player__total-timer"
-            />
+            <div className="workout-player__additional-info">
+                <Timer
+                    id="totalTimer"
+                    initialSeconds={this.totalTimeLeftFromStep}
+                    onTimerFinished={() => {}}
+                    setCallables={(callables: ChildCallables) =>
+                        (this.totalTimerCallables = callables)
+                    }
+                    className="workout-player__total-timer"
+                    showMinutesLeft
+                />
+                <span className="workout-player__step-counter">{`${this.state.currentStepIndex} / ${this.lastStepIndex}`}</span>
+            </div>
         );
-        const currentIntervalTimer = this.currentInterval && !this.state.hasWorkoutFinished && (
+        const currentIntervalTimer = currentInterval && !this.state.hasWorkoutFinished && (
             <>
                 <Timer
-                    initialSeconds={this.currentInterval!.duration}
-                    id={this.currentInterval!.id}
+                    initialSeconds={currentInterval.duration}
+                    id={currentInterval.id}
                     onTimerFinished={this.onTimerFinished}
                     setCallables={(callables: ChildCallables) =>
                         (this.intervalTimerCallables = callables)
@@ -146,19 +171,17 @@ class WorkoutPlayer extends Component<WorkoutPlayerProps, WorkoutPlayerState> {
                 <div className="workout-player__info">
                     {totalWorkoutTimer}
 
-                    <h4 className="workout-player__interval-title">
-                        {this.currentInterval!.mainTitle}
-                    </h4>
+                    <h4 className="workout-player__interval-title">{currentInterval!.mainTitle}</h4>
                     <h5 className="workout-player__subsection-title">
-                        {this.currentInterval.subsectionTitles &&
-                            this.currentInterval.subsectionTitles[this.currentIteration]}
+                        {currentInterval.subsectionTitles &&
+                            currentInterval.subsectionTitles[this.currentIteration]}
                     </h5>
                 </div>
             </>
         );
 
         const workoutFinished = this.state.hasWorkoutFinished && (
-            <div className="workout-player__finished">Workout has finished!</div>
+            <div className="workout-player__finished">Good job!</div>
         );
 
         const playPauseButton = this.state.isTimerOn ? (
