@@ -1,44 +1,58 @@
 import React, { createRef, RefObject } from 'react';
-import { Button } from '../button';
-import WorkoutEditorElement, {
-    EditorElementProps,
-} from '@/components/workoutEditorElement/WorkoutEditorElement';
+import { connect } from 'react-redux';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
-import { mockEditorElements } from './mockData';
-import './_workoutEditor.scss';
-import { ColorResult } from 'react-color';
+
+import { currentWorkout, WorkoutData } from '@/store/slices/workouts';
+
+import { Button } from '../button';
+import WorkoutEditorElement from '@/components/workoutEditorElement/WorkoutEditorElement';
 import TextInput from '../textInput/TextInput';
+import { mockEditorElements } from './mockData';
+import { ColorResult } from 'react-color';
 import { Link } from 'react-router-dom';
 import { IconPlay } from '@/misc/icons';
+import EditorElement, {
+    EditorElementFromState,
+} from '@/components/workoutEditorElement/EditorElement';
 
-type State = {
+import './_workoutEditor.scss';
+
+type WorkoutEditorState = {
     editorElements: EditorElementFromState[];
     workoutName: string;
     workoutId: string;
 };
 
-type EditorElementFromState = Omit<
-    EditorElementProps,
-    | 'onDurationChange'
-    | 'onPositionChange'
-    | 'onPositionUpdate'
-    | 'onColorChange'
-    | 'updateOffsetTop'
-    | 'onDelete'
-    | 'onTextInputUpdate'
->;
+type WorkoutEditorProps = RouteComponentProps & {
+    workout: WorkoutData | null;
+};
 
-class WorkoutEditor extends React.Component<{}, State> {
-    state: State;
+const mapStateToEditorElements = ({
+    startInterval,
+    pattern,
+    endInterval,
+}: WorkoutData): EditorElementFromState[] => {
+    return [
+        new EditorElement(startInterval),
+        ...pattern.map((interval) => new EditorElement(interval)),
+        new EditorElement(endInterval),
+    ];
+};
+
+class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorState> {
+    state: WorkoutEditorState;
 
     references: RefObject<WorkoutEditorElement>[] = [];
 
-    constructor(props: {}) {
+    constructor(props: WorkoutEditorProps) {
         super(props);
         this.state = {
-            editorElements: [...mockEditorElements],
-            workoutName: 'New Workout',
-            workoutId: uuidv4(),
+            editorElements: props.workout
+                ? mapStateToEditorElements(props.workout)
+                : [...mockEditorElements],
+            workoutName: props.workout ? props.workout.title : 'New Workout',
+            workoutId: props.workout ? props.workout.id || uuidv4() : uuidv4(),
         };
     }
 
@@ -78,7 +92,6 @@ class WorkoutEditor extends React.Component<{}, State> {
         };
 
         this.setState((state) => ({
-            ...state,
             editorElements: state.editorElements.map((el) => ({
                 ...el,
                 height: calcPercentage(el.duration),
@@ -181,7 +194,6 @@ class WorkoutEditor extends React.Component<{}, State> {
             newEditorElements.splice(elementIndex, 1);
 
             return {
-                ...state,
                 editorElements: newEditorElements,
             };
         }, this.calculateProportions);
@@ -206,7 +218,6 @@ class WorkoutEditor extends React.Component<{}, State> {
             newEditorElements.splice(swapIndex, 0, tempElement[0]);
 
             return {
-                ...state,
                 editorElements: newEditorElements,
             };
         }, this.updateAllReferences);
@@ -214,18 +225,9 @@ class WorkoutEditor extends React.Component<{}, State> {
 
     addEmptyElement = () => {
         this.setState((state) => {
-            const newElement: EditorElementFromState = {
-                duration: 30,
-                name: 'Empty Interval',
-                color: 'cornflowerblue',
-                height: 30,
-                id: uuidv4(),
-                swapIndex: -1,
-                swapHighlight: false,
-                offsetTop: 0,
-            };
+            const newElement = new EditorElement();
+
             return {
-                ...state,
                 editorElements: [...state.editorElements, newElement],
             };
         }, this.calculateProportions);
@@ -234,14 +236,13 @@ class WorkoutEditor extends React.Component<{}, State> {
     onTextInputUpdate = (id: string, value: string) => {
         this.udpateEditorElementsState((el) => {
             if (el.id === id) {
-                el.name = value;
+                el.mainTitle = value;
             }
         });
     };
 
     onWorkoutNameUpdate = (value: string) => {
         this.setState((state) => ({
-            ...state,
             workoutName: value,
         }));
     };
@@ -272,4 +273,8 @@ class WorkoutEditor extends React.Component<{}, State> {
     }
 }
 
-export default WorkoutEditor;
+const mapStateToProps = (state: any, params: any) => ({
+    workout: currentWorkout(state, params.match.params.workoutId) || null,
+});
+
+export default withRouter(connect(mapStateToProps)(WorkoutEditor));

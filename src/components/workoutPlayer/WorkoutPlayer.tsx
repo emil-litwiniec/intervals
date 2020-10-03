@@ -37,7 +37,7 @@ class WorkoutPlayer extends Component<WorkoutPlayerProps, WorkoutPlayerState> {
         if (hasStepIndexChanged) {
             const isOverLastStepIndex = this.state.currentStepIndex > this.lastStepIndex;
             this.setState({ hasWorkoutFinished: isOverLastStepIndex });
-            isOverLastStepIndex && setTimeout(() => this.props.history.replace('/'), 5000);
+            isOverLastStepIndex && setTimeout(() => this.props.history.push('/'), 5000);
         }
     }
 
@@ -231,8 +231,8 @@ class WorkoutPlayer extends Component<WorkoutPlayerProps, WorkoutPlayerState> {
     }
 }
 
-const mapStateToProps = (state: any) => ({
-    workout: currentWorkout(state, 'xs34'), // mock state key id
+const mapStateToProps = (state: any, params: any) => ({
+    workout: currentWorkout(state, params.match.params.workoutId),
 });
 
 export default withRouter(connect(mapStateToProps)(WorkoutPlayer));

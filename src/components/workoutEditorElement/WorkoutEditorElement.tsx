@@ -10,9 +10,9 @@ import { ColorResult, CirclePicker } from 'react-color';
 
 import TextInput from '@/components/textInput/TextInput';
 
-export type EditorElementProps = {
+export interface EditorElementProps {
     id: string;
-    name: string;
+    mainTitle: string;
     duration: number;
     color: string;
     height: number;
@@ -26,7 +26,7 @@ export type EditorElementProps = {
     onDelete(id: string): void;
     updateOffsetTop(id: string, offsetTop: number): void;
     onTextInputUpdate(id: string, value: string): void;
-};
+}
 
 type DraggableComponentBaseState = {
     initDragPos: Point;
@@ -152,7 +152,7 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps, Wo
     ];
 
     render() {
-        const { name, duration, color = '#f3f3f3', height } = this.props;
+        const { mainTitle, duration, color = '#f3f3f3', height } = this.props;
         const swapHighlightClassname = this.props.swapHighlight ? 'swap-highlight' : '';
         const moveClassname = this.isVerticalDrag ? 'moving' : '';
         const style: CSSProperties & { '--color': string } = {
@@ -192,11 +192,9 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps, Wo
                         />
                     )}
                 </div>
-                {/* <p className="editor-element__name no-select">{name}</p> */}
-
                 <TextInput
                     classNameVariant="editor-element"
-                    value={name}
+                    value={mainTitle}
                     onTextInputUpdate={this.onTextInputUpdate}
                     onFocusChange={this.onInputFocusChange}
                 />

@@ -4,7 +4,7 @@ import { WorkoutsState } from '@/store/slices/workouts';
 export const mockEditorElements = [
     {
         duration: 30,
-        name: 'Empty Interval',
+        mainTitle: 'Empty Interval',
         color: 'coral',
         height: 75,
         id: uuidv4(),
@@ -15,7 +15,7 @@ export const mockEditorElements = [
     },
     {
         duration: 30,
-        name: 'Empty Interval',
+        mainTitle: 'Empty Interval',
         color: 'seagreen',
         height: 75,
         id: uuidv4(),
@@ -26,7 +26,7 @@ export const mockEditorElements = [
     },
     {
         duration: 30,
-        name: 'Empty Interval',
+        mainTitle: 'Empty Interval',
         color: 'red',
         height: 75,
         id: uuidv4(),
@@ -37,7 +37,7 @@ export const mockEditorElements = [
     },
     {
         duration: 30,
-        name: 'Empty Interval',
+        mainTitle: 'Empty Interval',
         color: 'blue',
         height: 30,
         id: uuidv4(),

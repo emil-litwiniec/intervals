@@ -13,7 +13,7 @@ type SideListElement = {
 };
 
 export type WorkoutProps = {
-    workoutId: number;
+    workoutId: string;
     workoutName: string;
     workoutDuration: number;
 };
@@ -53,13 +53,13 @@ const WorkoutListElement: React.FC<WorkoutProps> = ({
     });
 
     const handleEditAction = () => {
-        history.push(`edit/${workoutId}`);
+        history.push(`/edit/${workoutId}`);
     };
 
     const handleRemoveAction = () => {};
 
     const handlePlayButtonClicked = () => {
-        history.push(`workout/${workoutId}`);
+        history.push(`/workout/${workoutId}`);
     };
 
     return (
