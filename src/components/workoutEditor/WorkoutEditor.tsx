@@ -1,38 +1,51 @@
-import React, { createRef, RefObject } from 'react';
+import React, { createRef, Dispatch, RefObject } from 'react';
 import { connect } from 'react-redux';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
-import { currentWorkout, WorkoutData } from '@/store/slices/workouts';
+import { currentWorkout, Interval, saveWorkout, WorkoutData } from '@/store/slices/workouts';
 
 import { Button } from '../button';
 import WorkoutEditorElement from '@/components/workoutEditorElement/WorkoutEditorElement';
 import TextInput from '../textInput/TextInput';
 import { mockEditorElements } from './mockData';
 import { ColorResult } from 'react-color';
-import { Link } from 'react-router-dom';
 import { IconPlay } from '@/misc/icons';
-import EditorElement, {
-    EditorElementFromState,
-} from '@/components/workoutEditorElement/EditorElement';
+import EditorElement from '@/components/workoutEditorElement/EditorElement';
 
 import './_workoutEditor.scss';
 
 type WorkoutEditorState = {
-    editorElements: EditorElementFromState[];
+    editorElements: EditorElement[];
     workoutName: string;
     workoutId: string;
+    iterations: number;
 };
 
-type WorkoutEditorProps = RouteComponentProps & {
-    workout: WorkoutData | null;
+type DispatchProps = {
+    saveWorkout(workoutData: WorkoutData): void;
+};
+
+type WorkoutEditorProps = RouteComponentProps &
+    DispatchProps & {
+        workout: WorkoutData | null;
+    };
+
+const editorElementToInterval = (editorElement: EditorElement): Interval => {
+    return {
+        id: editorElement.id,
+        mainTitle: editorElement.mainTitle,
+        subsectionTitles: editorElement.subsectionTitles,
+        duration: editorElement.duration,
+        color: editorElement.color,
+    };
 };
 
 const mapStateToEditorElements = ({
     startInterval,
     pattern,
     endInterval,
-}: WorkoutData): EditorElementFromState[] => {
+}: WorkoutData): EditorElement[] => {
     return [
         new EditorElement(startInterval),
         ...pattern.map((interval) => new EditorElement(interval)),
@@ -53,6 +66,7 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
                 : [...mockEditorElements],
             workoutName: props.workout ? props.workout.title : 'New Workout',
             workoutId: props.workout ? props.workout.id || uuidv4() : uuidv4(),
+            iterations: props.workout ? props.workout.iterations : 1,
         };
     }
 
@@ -82,13 +96,15 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
         this.calculateProportions();
     }
 
-    calculateProportions = () => {
-        const durationSum = this.state.editorElements.reduce((acc, curr): any => {
+    get totalDuration(): number {
+        return this.state.editorElements.reduce((acc, curr): any => {
             return { duration: acc.duration + curr.duration };
         }).duration;
+    }
 
+    calculateProportions = () => {
         const calcPercentage = (duration: number): number => {
-            return 100 / (durationSum / duration);
+            return 100 / (this.totalDuration / duration);
         };
 
         this.setState((state) => ({
@@ -155,11 +171,7 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
     };
 
     udpateEditorElementsState = (
-        callback: (
-            value: EditorElementFromState,
-            index: number,
-            array: EditorElementFromState[]
-        ) => void,
+        callback: (value: EditorElement, index: number, array: EditorElement[]) => void,
         afterSetStateCallback?: () => void
     ) => {
         this.setState(
@@ -242,9 +254,28 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
     };
 
     onWorkoutNameUpdate = (value: string) => {
-        this.setState((state) => ({
+        this.setState({
             workoutName: value,
-        }));
+        });
+    };
+
+    saveData = () => {
+        const editorElements = [...this.state.editorElements];
+        let data: WorkoutData = {
+            id: this.state.workoutId,
+            title: this.state.workoutName,
+            totalDuration: this.totalDuration,
+            iterations: this.state.iterations,
+            pattern: [
+                ...editorElements
+                    .splice(1, editorElements.length - 2)
+                    .map((element) => editorElementToInterval(element)),
+            ],
+            startInterval: editorElementToInterval(editorElements[0]),
+            endInterval: editorElementToInterval(editorElements[1]),
+        };
+        this.props.saveWorkout(data);
+        this.props.history.push(`/workout/${this.state.workoutId}`);
     };
 
     render() {
@@ -261,20 +292,24 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
                         label="Workout Title: "
                         classNameVariant="editor-element"
                     />
-                    <Link
-                        className="workout-editor__play-btn"
-                        to={`/workout/${this.state.workoutId}`}
+                    <Button
+                        additionalClassName="workout-editor__play-btn"
+                        handleClick={this.saveData}
                     >
                         <IconPlay />
-                    </Link>
+                    </Button>
                 </div>
             </section>
         );
     }
 }
 
+const mapDispatch = {
+    saveWorkout: saveWorkout,
+};
+
 const mapStateToProps = (state: any, params: any) => ({
     workout: currentWorkout(state, params.match.params.workoutId) || null,
 });
 
-export default withRouter(connect(mapStateToProps)(WorkoutEditor));
+export default withRouter(connect(mapStateToProps, mapDispatch)(WorkoutEditor));

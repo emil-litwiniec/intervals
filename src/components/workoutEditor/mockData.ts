@@ -1,55 +1,17 @@
 import { v4 as uuidv4 } from 'uuid';
 import { WorkoutsState } from '@/store/slices/workouts';
+import EditorElement from '@/components/workoutEditorElement/EditorElement';
 
-export const mockEditorElements = [
-    {
-        duration: 30,
-        mainTitle: 'Empty Interval',
-        color: 'coral',
-        height: 75,
-        id: uuidv4(),
-        offsetTop: 0,
-        index: 0,
-        swapIndex: -1,
-        swapHighlight: false,
-    },
-    {
-        duration: 30,
-        mainTitle: 'Empty Interval',
-        color: 'seagreen',
-        height: 75,
-        id: uuidv4(),
-        offsetTop: 0,
-        swapIndex: -1,
-        index: 1,
-        swapHighlight: false,
-    },
-    {
-        duration: 30,
-        mainTitle: 'Empty Interval',
-        color: 'red',
-        height: 75,
-        id: uuidv4(),
-        offsetTop: 0,
-        swapIndex: -1,
-        index: 2,
-        swapHighlight: false,
-    },
-    {
-        duration: 30,
-        mainTitle: 'Empty Interval',
-        color: 'blue',
-        height: 30,
-        id: uuidv4(),
-        offsetTop: 0,
-        swapIndex: -1,
-        index: 3,
-        swapHighlight: false,
-    },
+export const mockEditorElements: EditorElement[] = [
+    new EditorElement(),
+    new EditorElement(),
+    new EditorElement(),
+    new EditorElement(),
 ];
 
 export const mockStoreWorkoutData: WorkoutsState = {
     xs34: {
+        id: 'xs34',
         title: 'SomeTitle',
         totalDuration: 4500,
         iterations: 3,
@@ -83,6 +45,7 @@ export const mockStoreWorkoutData: WorkoutsState = {
         },
     },
     pg423: {
+        id: 'pg423',
         title: 'SomeTitle',
         totalDuration: 4500,
         iterations: 1,

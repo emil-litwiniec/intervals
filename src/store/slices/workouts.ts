@@ -1,5 +1,6 @@
-import { createSlice, Slice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit';
 import { mockStoreWorkoutData } from '@/components/workoutEditor/mockData';
+import { loadState } from '@/utils/localStorage';
 
 export type Interval = {
     id: string;
@@ -10,7 +11,7 @@ export type Interval = {
 };
 
 export type WorkoutData = {
-    id?: string;
+    id: string;
     title: string;
     totalDuration: number;
     iterations: number;
@@ -28,30 +29,31 @@ export type SingleWorkoutEntry = {
     1: WorkoutData;
 };
 
-const workoutsSlice: Slice<WorkoutsState> = createSlice({
+export const workoutsSlice: Slice = createSlice({
     name: 'workouts',
-    initialState: mockStoreWorkoutData as WorkoutsState,
+    initialState: loadState() || mockStoreWorkoutData,
     reducers: {
-        saveWorkout() {},
-        replaceWorkout() {},
-        deleteWorkout() {},
-        deleteAllWorkouts() {},
+        saveWorkout(state, { payload }: PayloadAction<WorkoutData>) {
+            state[payload.id] = payload;
+        },
+        deleteWorkout(state, { payload }: PayloadAction<string>) {
+            delete state[payload];
+        },
+        deleteAllWorkouts() {
+            return {};
+        },
     },
 });
 
-export const currentWorkout = (
-    state: { workouts: WorkoutsState },
-    id: string
-) => {
+export const { saveWorkout, deleteWorkout, deleteAllWorkouts } = workoutsSlice.actions;
+
+export const currentWorkout = (state: { workouts: WorkoutsState }, id: string) => {
     const workout = state.workouts[id];
-    if (workout) {
-        workout.id = id;
-    }
     return workout || null;
 };
 
 export const workoutsAsArray = (state: { workouts: WorkoutsState }) => {
-    return Object.entries(state.workouts).map((el) => ({ id: el[0], ...el[1] }));
+    return Object.entries(state.workouts).map((el) => el[1]);
 };
 
 export default workoutsSlice.reducer;

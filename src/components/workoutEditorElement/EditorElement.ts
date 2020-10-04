@@ -1,19 +1,7 @@
-import { EditorElementProps } from "./WorkoutEditorElement";
 import { v4 as uuidv4 } from 'uuid';
-import { Interval } from "@/store/slices/workouts";
+import { Interval } from '@/store/slices/workouts';
 
-export type EditorElementFromState = Omit<
-    EditorElementProps,
-    | 'onDurationChange'
-    | 'onPositionChange'
-    | 'onPositionUpdate'
-    | 'onColorChange'
-    | 'updateOffsetTop'
-    | 'onDelete'
-    | 'onTextInputUpdate'
->;
-
-export default class EditorElement implements EditorElementFromState {
+export default class EditorElement {
     id = uuidv4();
     mainTitle = 'Empty Interval';
     subsectionTitles: string[] = [];

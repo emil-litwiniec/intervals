@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import WorkoutListElement from '@/components/workoutListElement/WorkoutListElement';
 import './_workoutsList.scss';
 import { WorkoutData, workoutsAsArray, WorkoutsState } from '@/store/slices/workouts';
@@ -7,7 +7,7 @@ import { WorkoutData, workoutsAsArray, WorkoutsState } from '@/store/slices/work
 const WorkoutsList: React.FC = () => {
     const workouts: any = useSelector<{ workouts: WorkoutsState }>(workoutsAsArray);
 
-    const workoutsList = workouts.map((workout: WorkoutData & { id: string }) => (
+    const workoutsList = workouts.map((workout: WorkoutData) => (
         <WorkoutListElement
             workoutId={workout.id}
             workoutName={workout.title}

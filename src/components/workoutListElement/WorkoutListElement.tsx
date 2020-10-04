@@ -5,6 +5,8 @@ import './_workoutListElement.scss';
 import { IconPlay, IconEdit, IconDelete } from '@/misc/icons';
 import Button from '@/components/button/Button';
 import { formatSecondsToMinutes } from '@/utils/format';
+import { useDispatch } from 'react-redux';
+import { deleteWorkout } from '@/store/slices/workouts';
 
 type SideListElement = {
     classNameVariant: string;
@@ -24,7 +26,7 @@ const WorkoutListElement: React.FC<WorkoutProps> = ({
     workoutDuration,
 }) => {
     const history = useHistory();
-
+    const dispatch = useDispatch();
     const createSwipeListSideElement = ({
         classNameVariant,
         textContent,
@@ -56,7 +58,9 @@ const WorkoutListElement: React.FC<WorkoutProps> = ({
         history.push(`/edit/${workoutId}`);
     };
 
-    const handleRemoveAction = () => {};
+    const handleRemoveAction = () => {
+        dispatch(deleteWorkout(workoutId));
+    };
 
     const handlePlayButtonClicked = () => {
         history.push(`/workout/${workoutId}`);
