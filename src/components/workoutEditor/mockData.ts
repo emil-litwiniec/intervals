@@ -12,35 +12,36 @@ export const mockEditorElements: EditorElement[] = [
 export const mockStoreWorkoutData: WorkoutsState = {
     xs34: {
         id: 'xs34',
-        title: 'SomeTitle',
+        title: 'Funk!',
         totalDuration: 4500,
-        iterations: 3,
+        iterations: 10,
         pattern: [
             {
                 id: 'xasda',
                 mainTitle: 'High Interval Cool',
-                subsectionTitles: ['Push-ups', 'Sit-ups'],
-                duration: 120,
+                subsectionTitles: ['Seal Jacks', 'Push Ups', 'Forward Lunges (Alternating)',
+                'Abs Hip Raises', 'Jumping Jacks', 'Superman', 'Mountain Climbers', 'Close Squats', 'Planks', 'Burpees'],
+                duration: 30,
                 color: 'coral',
             },
             {
                 id: 'sdawqq',
                 mainTitle: 'Rest',
                 subsectionTitles: [],
-                duration: 16,
+                duration: 30,
                 color: 'red',
             },
         ],
         startInterval: {
             id: 'poqiwe',
             mainTitle: 'Warm up',
-            duration: 30,
+            duration: 5*60,
             color: 'green',
         },
         endInterval: {
             id: 'aposuipiojp',
             mainTitle: 'Cool down',
-            duration: 30,
+            duration: 60,
             color: 'black',
         },
     },

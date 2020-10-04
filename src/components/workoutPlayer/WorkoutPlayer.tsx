@@ -129,6 +129,8 @@ class WorkoutPlayer extends Component<WorkoutPlayerProps, WorkoutPlayerState> {
         const workout = this.props.workout;
         if (!workout) return 0;
         const { iterations } = workout;
+
+        // FIXME: incorrect iteration math equation
         const iteration = Math.floor((stepIndex - 1) / iterations);
         return iteration;
     }
@@ -167,6 +169,7 @@ class WorkoutPlayer extends Component<WorkoutPlayerProps, WorkoutPlayerState> {
                     }
                     className="workout-player__timer"
                     circularDisplay
+                    sound={true}
                 />
                 <div className="workout-player__info">
                     {totalWorkoutTimer}

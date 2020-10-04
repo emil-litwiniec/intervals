@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import TimerCircleDisplay from '@/components/timerCircleDisplay/TimerCircleDisplay';
 import { formatSecondsToMinutes, formatSecondsToMinutesLeftRounded } from '@/utils/format';
 import './_timer.scss';
+import { soundHigh, soundLow } from '@/utils/sounds';
 
 export type ChildCallables = {
     startTimer(): void;
@@ -18,6 +19,7 @@ type TimerProps = {
     className: string;
     circularDisplay?: boolean;
     showMinutesLeft?: boolean;
+    sound?: boolean;
 };
 
 type TimerState = {
@@ -50,6 +52,12 @@ class Timer extends Component<TimerProps, TimerState> {
         if (prevProps.id !== this.props.id) {
             this.setState({ millisecondsLeft: this.props.initialSeconds * 1000 });
         }
+
+        const shouldPlaySound =
+            this.state.millisecondsLeft <= 3000 &&
+            this.state.millisecondsLeft !== 0 &&
+            this.state.millisecondsLeft % 1000 === 0;
+        shouldPlaySound && soundLow.play();
     }
 
     reset = () => {
@@ -65,6 +73,7 @@ class Timer extends Component<TimerProps, TimerState> {
     };
 
     start = () => {
+        soundHigh.play();
         this.clear();
         this.setState((state) => ({
             isTimerPaused: false,

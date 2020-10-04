@@ -1,3 +1,5 @@
+@import '../../styles/variables';
+
 .timer {
     &__wrapper {
         position: relative;
@@ -5,9 +7,10 @@
 
     &__text-display {
         position: absolute;
-        font-size: 6rem;
+        font-size: 12rem;
+        font-family: $font-monospaced;
         color: white;
-        top: calc(50% + 5px);
+        top: 52%;
         left: 50%;
         transform: translate(-50%, -50%);
     }
