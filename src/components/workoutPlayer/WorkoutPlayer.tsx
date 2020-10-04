@@ -127,11 +127,9 @@ class WorkoutPlayer extends Component<WorkoutPlayerProps, WorkoutPlayerState> {
     get currentIteration(): number {
         const stepIndex = this.state.currentStepIndex;
         const workout = this.props.workout;
-        if (!workout) return 0;
-        const { iterations } = workout;
-
-        // FIXME: incorrect iteration math equation
-        const iteration = Math.floor((stepIndex - 1) / iterations);
+        if (!workout) return 1;
+        const { pattern } = workout;
+        const iteration = Math.floor(stepIndex / pattern.length);
         return iteration;
     }
 
