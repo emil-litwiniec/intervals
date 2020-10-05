@@ -7,3 +7,10 @@
     user-select: none; /* Non-prefixed version, currently
                                     supported by Chrome, Edge, Opera and Firefox */
 }
+
+body:not(.show-tab-focus) button:focus,
+body:not(.show-tab-focus) input:focus,
+body:not(.show-tab-focus) select:focus,
+body:not(.show-tab-focus) textarea:focus {
+    outline: none;
+}

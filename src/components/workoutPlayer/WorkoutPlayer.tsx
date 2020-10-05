@@ -7,6 +7,8 @@ import { IconPlay, IconPause, IconReset, IconNext, IconPrev } from '@/misc/icons
 import './_workoutPlayer.scss';
 import { currentWorkout, WorkoutData, Interval } from '@/store/slices/workouts';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
+import ToggleSoundButton from '../button/ToggleSoundButton';
+import { isMuttedSelector } from '@/store/slices/settings';
 
 type WorkoutPlayerState = {
     isTimerOn: boolean;
@@ -16,6 +18,7 @@ type WorkoutPlayerState = {
 
 type WorkoutPlayerProps = RouteComponentProps & {
     workout: WorkoutData | null;
+    isMutted: boolean;
 };
 
 class WorkoutPlayer extends Component<WorkoutPlayerProps, WorkoutPlayerState> {
@@ -158,17 +161,20 @@ class WorkoutPlayer extends Component<WorkoutPlayerProps, WorkoutPlayerState> {
         );
         const currentIntervalTimer = currentInterval && !this.state.hasWorkoutFinished && (
             <>
-                <Timer
-                    initialSeconds={currentInterval.duration}
-                    id={currentInterval.id}
-                    onTimerFinished={this.onTimerFinished}
-                    setCallables={(callables: ChildCallables) =>
-                        (this.intervalTimerCallables = callables)
-                    }
-                    className="workout-player__timer"
-                    circularDisplay
-                    sound={true}
-                />
+                <div className="workout-player__timer-container">
+                    <ToggleSoundButton className="workout-player__toggle-sound" />
+                    <Timer
+                        initialSeconds={currentInterval.duration}
+                        id={currentInterval.id}
+                        onTimerFinished={this.onTimerFinished}
+                        setCallables={(callables: ChildCallables) =>
+                            (this.intervalTimerCallables = callables)
+                        }
+                        className="workout-player__timer"
+                        circularDisplay
+                        sound={true}
+                    />
+                </div>
                 <div className="workout-player__info">
                     {totalWorkoutTimer}
 
@@ -234,6 +240,7 @@ class WorkoutPlayer extends Component<WorkoutPlayerProps, WorkoutPlayerState> {
 
 const mapStateToProps = (state: any, params: any) => ({
     workout: currentWorkout(state, params.match.params.workoutId),
+    isMutted: isMuttedSelector(state),
 });
 
 export default withRouter(connect(mapStateToProps)(WorkoutPlayer));

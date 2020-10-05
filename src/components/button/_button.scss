@@ -33,6 +33,13 @@
             color: $color-off-white;
         }
     }
+
+    &--toggle-sound {
+        svg {
+            height: 4rem;
+            width: 4rem;
+        }
+    }
 }
 
 .expand {

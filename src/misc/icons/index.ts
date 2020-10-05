@@ -6,3 +6,5 @@ export { default as IconReset } from './IconReset';
 export { default as IconNext } from './IconNext';
 export { default as IconPrev } from './IconPrev';
 export { default as IconColorFill } from './IconColorFill';
+export { default as IconSoundOn } from './IconSoundOn';
+export { default as IconSoundOff } from './IconSoundOff';

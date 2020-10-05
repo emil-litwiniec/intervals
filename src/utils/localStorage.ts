@@ -1,8 +1,6 @@
-import { WorkoutsState } from '@/store/slices/workouts';
-
 const localStorageKey = 'workoutsData';
 
-export const loadState = (): WorkoutsState | null => {
+export const loadState = (): any | null => {
     try {
         const json = localStorage.getItem(localStorageKey);
         if (!json) return null;
@@ -12,7 +10,7 @@ export const loadState = (): WorkoutsState | null => {
     }
 };
 
-export const saveState = (state: { workouts: WorkoutsState }) => {
+export const saveState = (state: any) => {
     const serializedState = JSON.stringify(state);
     localStorage.setItem(localStorageKey, serializedState);
 };

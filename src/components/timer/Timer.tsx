@@ -3,6 +3,8 @@ import TimerCircleDisplay from '@/components/timerCircleDisplay/TimerCircleDispl
 import { formatSecondsToMinutes, formatSecondsToMinutesLeftRounded } from '@/utils/format';
 import './_timer.scss';
 import { soundHigh, soundLow } from '@/utils/sounds';
+import { isMuttedSelector } from '@/store/slices/settings';
+import { connect } from 'react-redux';
 
 export type ChildCallables = {
     startTimer(): void;
@@ -20,6 +22,7 @@ type TimerProps = {
     circularDisplay?: boolean;
     showMinutesLeft?: boolean;
     sound?: boolean;
+    isMutted: boolean;
 };
 
 type TimerState = {
@@ -52,12 +55,13 @@ class Timer extends Component<TimerProps, TimerState> {
         if (prevProps.id !== this.props.id) {
             this.setState({ millisecondsLeft: this.props.initialSeconds * 1000 });
         }
-
-        const shouldPlaySound =
-            this.state.millisecondsLeft <= 3000 &&
-            this.state.millisecondsLeft !== 0 &&
-            this.state.millisecondsLeft % 1000 === 0;
-        shouldPlaySound && soundLow.play();
+        if (!this.props.isMutted) {
+            const shouldPlaySound =
+                this.state.millisecondsLeft <= 3000 &&
+                this.state.millisecondsLeft !== 0 &&
+                this.state.millisecondsLeft % 1000 === 0;
+            shouldPlaySound && soundLow.play();
+        }
     }
 
     reset = () => {
@@ -73,7 +77,7 @@ class Timer extends Component<TimerProps, TimerState> {
     };
 
     start = () => {
-        soundHigh.play();
+        !this.props.isMutted && soundHigh.play();
         this.clear();
         this.setState((state) => ({
             isTimerPaused: false,
@@ -130,4 +134,8 @@ class Timer extends Component<TimerProps, TimerState> {
     }
 }
 
-export default Timer;
+const mapStateToProps = (state: any) => ({
+    isMutted: isMuttedSelector(state),
+});
+
+export default connect(mapStateToProps)(Timer);

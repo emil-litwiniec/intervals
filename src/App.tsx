@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { MainView, EditView, WorkoutView } from '@/views';
+import handleFocusOutline from '@/utils/handleFocusOutline';
 
 import './styles/App.scss';
 
 function App() {
+    useEffect(() => {
+        handleFocusOutline();
+    }, []);
+
     return (
         <main className="main-wrapper">
             <Router>
