@@ -11,7 +11,7 @@ import TextInput from '../textInput/TextInput';
 import { mockEditorElements } from './mockData';
 import { ColorResult } from 'react-color';
 import { IconPlay } from '@/misc/icons';
-import EditorElement from '@/components/workoutEditorElement/EditorElement';
+import EditorElement, { BorderVariant } from '@/components/workoutEditorElement/EditorElement';
 
 import './_workoutEditor.scss';
 
@@ -57,6 +57,7 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
     state: WorkoutEditorState;
 
     references: RefObject<WorkoutEditorElement>[] = [];
+    wrapperRef: RefObject<HTMLDivElement> = createRef();
 
     constructor(props: WorkoutEditorProps) {
         super(props);
@@ -71,7 +72,7 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
     }
 
     get editorElements() {
-        return this.state.editorElements.map((element) => {
+        return this.state.editorElements.map((element, index, array) => {
             const newRef: RefObject<WorkoutEditorElement> = createRef();
             this.references.push(newRef);
 
@@ -85,7 +86,10 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
                     onDelete={this.onDelete}
                     updateOffsetTop={this.updateOffsetTop}
                     onTextInputUpdate={this.onTextInputUpdate}
+                    parentOffsetTop={this.wrapperRef.current?.offsetTop || 0}
                     ref={newRef}
+                    index={index}
+                    lastIndex={array.length - 1}
                     {...element}
                 />
             );
@@ -94,6 +98,7 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
 
     componentDidMount() {
         this.calculateProportions();
+        this.updateCoreBorders();
     }
 
     get totalDuration(): number {
@@ -101,6 +106,28 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
             return { duration: acc.duration + curr.duration };
         }).duration;
     }
+
+    updateCoreBorders = () => {
+        this.udpateEditorElementsState((el, index, array) => {
+            switch (index) {
+                case 0:
+                    el.borderVariant = BorderVariant.NONE;
+                    break;
+                case array.length - 1:
+                    el.borderVariant = BorderVariant.NONE;
+                    break;
+                case array.length - 2:
+                    el.borderVariant = BorderVariant.BOTTOM;
+                    break;
+                case 1:
+                    el.borderVariant = BorderVariant.TOP;
+                    break;
+                default:
+                    el.borderVariant = BorderVariant.SIDES;
+                    break;
+            }
+        });
+    };
 
     calculateProportions = () => {
         const calcPercentage = (duration: number): number => {
@@ -119,6 +146,7 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
         this.references.forEach((ref) => {
             ref.current?.updateOffset();
         });
+        this.updateCoreBorders();
     };
 
     onDurationChange = (id: string, diff: number) => {
@@ -133,6 +161,7 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
                 this.updateAllReferences();
             }
         );
+        this.updateCoreBorders();
     };
 
     onPositionChange = (id: string, clientY: number) => {
@@ -281,7 +310,9 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
     render() {
         return (
             <section className="workout-editor">
-                <div className="workout-editor__elements">{this.editorElements}</div>
+                <div className="workout-editor__elements" ref={this.wrapperRef}>
+                    {this.editorElements}
+                </div>
                 <div className="workout-editor__button-wrapper">
                     <Button handleClick={this.addEmptyElement}>
                         <div>Add interval</div>

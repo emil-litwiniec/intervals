@@ -9,6 +9,7 @@ import Button from '@/components/button/Button';
 import { ColorResult, CirclePicker } from 'react-color';
 
 import TextInput from '@/components/textInput/TextInput';
+import { BorderVariant } from './EditorElement';
 
 export interface EditorElementProps {
     id: string;
@@ -19,6 +20,10 @@ export interface EditorElementProps {
     offsetTop: number;
     swapIndex: number;
     swapHighlight: boolean;
+    borderVariant: BorderVariant;
+    parentOffsetTop: number;
+    index: number;
+    lastIndex: number;
     onDurationChange(id: string, diff: number): void;
     onPositionChange(id: string, clientY: number): void;
     onPositionUpdate(id: string, clientY: number): void;
@@ -126,7 +131,7 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps, Wo
 
     updateOffset() {
         const offsetTop = this.container.current?.offsetTop || 0;
-        this.props.updateOffsetTop(this.props.id, offsetTop);
+        this.props.updateOffsetTop(this.props.id, offsetTop + this.props.parentOffsetTop);
     }
 
     playReturnAnimation = (): void => {
@@ -151,8 +156,22 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps, Wo
         }),
     ];
 
+    get instruction() {
+        const className = 'editor-element__instruction';
+        switch (this.props.index) {
+            case 0:
+                return <span className={className}>PREPARE</span>;
+            case 1:
+                return <span className={className}>CORE x2</span>;
+            case this.props.lastIndex:
+                return <span className={className}>REST (time between sets)</span>;
+            default:
+                return null;
+        }
+    }
+
     render() {
-        const { mainTitle, duration, color = '#f3f3f3', height } = this.props;
+        const { mainTitle, duration, color = '#f3f3f3', height, borderVariant } = this.props;
         const swapHighlightClassname = this.props.swapHighlight ? 'swap-highlight' : '';
         const moveClassname = this.isVerticalDrag ? 'moving' : '';
         const style: CSSProperties & { '--color': string } = {
@@ -166,11 +185,12 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps, Wo
 
         return (
             <div
-                className={`editor-element ${swapHighlightClassname} ${moveClassname}`}
+                className={`editor-element ${swapHighlightClassname} ${moveClassname} ${borderVariant}`}
                 style={style}
                 ref={this.container}
                 data-id={this.props.id}
             >
+                {this.instruction}
                 <div className="editor-element__button-group">
                     <Button handleClick={() => this.togglePicker()} variant="editor-element">
                         <IconColorFill className="editor-element__color" />

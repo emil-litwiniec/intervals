@@ -1,0 +1,14 @@
+.logotype {
+    margin-top: 1rem;
+    margin-right: 3rem;
+    width: 20rem;
+    height: 5rem;
+
+    &__wrapper {
+        position: absolute;
+        display: flex;
+        justify-content: flex-end;
+        width: 100%;
+        z-index: 400;
+    }
+}

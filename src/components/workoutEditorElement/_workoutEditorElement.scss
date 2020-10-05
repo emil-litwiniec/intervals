@@ -1,5 +1,8 @@
 @import '../../styles/variables';
 
+$selection-width: 5px;
+$selection-color: white;
+
 .editor-element {
     position: relative;
     display: flex;
@@ -66,6 +69,16 @@
         }
     }
 
+    &__instruction {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        font-size: 1.2rem;
+        color: white;
+        opacity: 0.8;
+        z-index: 150;
+    }
+
     & .button--editor-element {
         z-index: 100;
 
@@ -89,7 +102,7 @@
     }
 
     &.moving {
-        border: 2px solid white;
+        border: 2px solid white !important;
         border-radius: 5px;
 
         &::after {
@@ -130,5 +143,23 @@
         .editor-element__duration-change {
             opacity: 1;
         }
+    }
+
+    &.selection-top {
+        border: $selection-width solid $selection-color;
+        border-top-width: $selection-width + 1;
+        border-bottom: none;
+    }
+
+    &.selection-bottom {
+        border: $selection-width solid $selection-color;
+        border-bottom-width: $selection-width + 1;
+        border-top: none;
+    }
+
+    &.selection-sides {
+        border: $selection-width solid $selection-color;
+        border-top: none;
+        border-bottom: none;
     }
 }

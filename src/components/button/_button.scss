@@ -9,8 +9,7 @@
         transform: scale(1.2);
     }
 
-    &:active .button__container > *,
-    &:focus .button__container > * {
+    &:active .button__container > * {
         transform: scale(1.2) translateY(2px);
     }
 

@@ -1,6 +1,13 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Interval } from '@/store/slices/workouts';
 
+export enum BorderVariant {
+    TOP = 'selection-top',
+    BOTTOM = 'selection-bottom',
+    SIDES = 'selection-sides',
+    NONE = '',
+}
+
 export default class EditorElement {
     id = uuidv4();
     mainTitle = 'Empty Interval';
@@ -11,6 +18,7 @@ export default class EditorElement {
     height = 0;
     swapIndex = -1;
     swapHighlight = false;
+    borderVariant = BorderVariant.NONE;
 
     constructor(intervalData?: Interval) {
         if (intervalData) {
