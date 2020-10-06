@@ -18,7 +18,7 @@ const ToggleSoundButton: React.FC<ToggleSoundButtonProps> = ({ className = '' })
             variant="toggle-sound"
             handleClick={() => dispatch(setMute(false))}
         >
-            <IconSoundOn />
+            <IconSoundOff />
         </Button>
     ) : (
         <Button
@@ -26,7 +26,7 @@ const ToggleSoundButton: React.FC<ToggleSoundButtonProps> = ({ className = '' })
             variant="toggle-sound"
             handleClick={() => dispatch(setMute(true))}
         >
-            <IconSoundOff />
+            <IconSoundOn />
         </Button>
     );
 };

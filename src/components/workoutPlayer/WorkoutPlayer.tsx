@@ -14,6 +14,8 @@ type WorkoutPlayerState = {
     isTimerOn: boolean;
     hasWorkoutFinished: boolean;
     currentStepIndex: number;
+    currentSetIteration: number;
+    totalStepIndex: number;
 };
 
 type WorkoutPlayerProps = RouteComponentProps & {
@@ -31,6 +33,8 @@ class WorkoutPlayer extends Component<WorkoutPlayerProps, WorkoutPlayerState> {
         this.state = {
             isTimerOn: false,
             currentStepIndex: 0,
+            totalStepIndex: 0,
+            currentSetIteration: 1,
             hasWorkoutFinished: false,
         };
     }
@@ -73,22 +77,44 @@ class WorkoutPlayer extends Component<WorkoutPlayerProps, WorkoutPlayerState> {
     };
 
     handleNextInterval = () => {
-        this.setState(
-            (state) => ({
-                currentStepIndex: state.currentStepIndex + 1,
-            }),
-            this.updateTotalTimer
-        );
+        this.setState((state) => {
+            const shouldStartNewSet =
+                this.lastStepIndex === state.currentStepIndex &&
+                state.currentSetIteration < (this.props.workout?.setIterations || 1);
+
+            const newStepIndex = shouldStartNewSet ? 1 : state.currentStepIndex + 1;
+            const newSetIteration = shouldStartNewSet
+                ? state.currentSetIteration + 1
+                : state.currentSetIteration;
+
+            return {
+                currentStepIndex: newStepIndex,
+                currentSetIteration: newSetIteration,
+                totalStepIndex: state.totalStepIndex + 1,
+            };
+        }, this.updateTotalTimer);
     };
 
     handlePreviousInterval = () => {
         if (this.state.currentStepIndex === 0) return;
-        this.setState(
-            (state) => ({
-                currentStepIndex: state.currentStepIndex - 1,
-            }),
-            this.updateTotalTimer
-        );
+        this.setState((state) => {
+            const shouldSetPreviousSet =
+                this.state.currentStepIndex === 1 && this.state.currentSetIteration >= 1;
+
+            const newStepIndex = shouldSetPreviousSet
+                ? this.lastStepIndex
+                : state.currentStepIndex - 1;
+
+            const newSetIteration = shouldSetPreviousSet
+                ? state.currentSetIteration - 1
+                : state.currentSetIteration;
+
+            return {
+                currentStepIndex: newStepIndex,
+                currentSetIteration: newSetIteration,
+                totalStepIndex: state.totalStepIndex - 1,
+            };
+        }, this.updateTotalTimer);
     };
 
     getInterval(stepIndex: number): Interval | null {
@@ -113,9 +139,15 @@ class WorkoutPlayer extends Component<WorkoutPlayerProps, WorkoutPlayerState> {
 
     get totalTimeLeftFromStep() {
         let totalTimeLeft = 0;
-        for (let i = this.state.currentStepIndex; i <= this.lastStepIndex; i++) {
-            const intervalDuration = this.getInterval(i)?.duration || 0;
+        const maxSetIterations = this.props.workout?.setIterations || 1;
+        let stepIteration = this.state.currentSetIteration;
+
+        for (let i = this.state.totalStepIndex; i <= this.lastStepIndex * maxSetIterations; i++) {
+            const patternIndex = i - (stepIteration - 1) * this.lastStepIndex;
+            const intervalDuration = this.getInterval(patternIndex)?.duration || 0;
+
             totalTimeLeft += intervalDuration;
+            i === this.lastStepIndex * stepIteration && stepIteration++;
         }
         return totalTimeLeft;
     }
@@ -127,7 +159,7 @@ class WorkoutPlayer extends Component<WorkoutPlayerProps, WorkoutPlayerState> {
         return pattern.length * coreIterations + 1;
     }
 
-    get currentIteration(): number {
+    get currentCoreIteration(): number {
         const stepIndex = this.state.currentStepIndex;
         const workout = this.props.workout;
         if (!workout) return 1;
@@ -162,7 +194,13 @@ class WorkoutPlayer extends Component<WorkoutPlayerProps, WorkoutPlayerState> {
         const currentIntervalTimer = currentInterval && !this.state.hasWorkoutFinished && (
             <>
                 <div className="workout-player__timer-container">
-                    <ToggleSoundButton className="workout-player__toggle-sound" />
+                    <div className="workout-player__info-top">
+                        <span className="workout-player__step-counter">
+                            {`${this.state.currentSetIteration} / ${this.props.workout?.setIterations}`}
+                        </span>
+                        <ToggleSoundButton className="workout-player__toggle-sound" />
+                    </div>
+
                     <Timer
                         initialSeconds={currentInterval.duration}
                         id={currentInterval.id}
@@ -178,11 +216,13 @@ class WorkoutPlayer extends Component<WorkoutPlayerProps, WorkoutPlayerState> {
                 <div className="workout-player__info">
                     {totalWorkoutTimer}
 
-                    <h4 className="workout-player__interval-title">{currentInterval!.mainTitle}</h4>
-                    <h5 className="workout-player__subsection-title">
+                    <span className="workout-player__interval-title">
+                        {currentInterval!.mainTitle}
+                    </span>
+                    <span className="workout-player__subsection-title">
                         {currentInterval.subsectionTitles &&
-                            currentInterval.subsectionTitles[this.currentIteration]}
-                    </h5>
+                            currentInterval.subsectionTitles[this.currentCoreIteration]}
+                    </span>
                 </div>
             </>
         );
