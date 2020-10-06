@@ -32,7 +32,7 @@ export type SingleWorkoutEntry = {
 
 export const workoutsSlice: Slice = createSlice({
     name: 'workouts',
-    initialState: loadState().workout || mockStoreWorkoutData,
+    initialState: loadState().workouts || mockStoreWorkoutData,
     reducers: {
         saveWorkout(state, { payload }: PayloadAction<WorkoutData>) {
             state[payload.id] = payload;
