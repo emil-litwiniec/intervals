@@ -8,8 +8,9 @@ import Button from '@/components/button/Button';
 
 import { ColorResult, CirclePicker } from 'react-color';
 
-import Input from '@/components/textInput/TextInput';
+import Input from '@/components/textInput/Input';
 import { BorderVariant } from './EditorElement';
+import { roundBy5 } from '@/utils/math';
 
 export interface EditorElementProps {
     id: string;
@@ -93,10 +94,8 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps, Wo
 
         const shouldUpdateDuration = elapsed > interval && this.isHorizontalDrag;
         const shouldUpdatePosition = elapsed > interval && this.isVerticalDrag;
-        const minimalDuration = 30;
-        const isDurationBelowMinimal = diffX < 0 && this.props.duration + diffX < minimalDuration;
 
-        if (!isDurationBelowMinimal && shouldUpdateDuration) {
+        if (shouldUpdateDuration) {
             this.props.onDurationChange(this.props.id, diffX);
             if (this.state.showPicker) this.setState({ showPicker: false });
         } else if (shouldUpdatePosition) {
@@ -165,7 +164,10 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps, Wo
             case 1:
                 return (
                     <span className={className}>
-                        CORE x <span className={className + '--iterations'}>{this.props.coreIterations}</span>
+                        CORE x
+                        <span className={className + '--iterations'}>
+                            {this.props.coreIterations}
+                        </span>
                     </span>
                 );
             case this.props.lastIndex:
@@ -224,13 +226,13 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps, Wo
                     onFocusChange={this.onInputFocusChange}
                 />
                 <p className="editor-element__duration no-select">
-                    {formatSecondsToMinutes(duration)}
+                    {formatSecondsToMinutes(roundBy5(duration))}
                 </p>
                 <div
                     className="editor-element__duration-change no-select"
                     style={{ backgroundColor: `${color}` }}
                 >
-                    <p className="no-select">{formatSecondsToMinutes(duration)}</p>
+                    <p className="no-select">{formatSecondsToMinutes(roundBy5(duration))}</p>
                 </div>
             </div>
         );

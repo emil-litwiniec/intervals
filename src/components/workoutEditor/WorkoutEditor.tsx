@@ -7,11 +7,12 @@ import { currentWorkout, Interval, saveWorkout, WorkoutData } from '@/store/slic
 
 import { Button } from '../button';
 import WorkoutEditorElement from '@/components/workoutEditorElement/WorkoutEditorElement';
-import Input from '../textInput/TextInput';
+import Input from '../textInput/Input';
 import { mockEditorElements } from './mockData';
 import { ColorResult } from 'react-color';
 import { IconPlay } from '@/misc/icons';
 import EditorElement, { BorderVariant } from '@/components/workoutEditorElement/EditorElement';
+import { roundBy5 } from '@/utils/math';
 
 import './_workoutEditor.scss';
 
@@ -37,7 +38,7 @@ const editorElementToInterval = (editorElement: EditorElement): Interval => {
         id: editorElement.id,
         mainTitle: editorElement.mainTitle,
         subsectionTitles: editorElement.subsectionTitles,
-        duration: editorElement.duration,
+        duration: roundBy5(editorElement.duration),
         color: editorElement.color,
     };
 };
@@ -132,9 +133,18 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
         });
     };
 
+    durationStep = (duration: number) => {
+        return duration - (duration % 5);
+    };
+
     calculateProportions = () => {
         const calcPercentage = (duration: number): number => {
-            return 100 / (this.totalDuration / duration);
+            const percentage = 100 / (this.totalDuration / duration);
+            if (percentage < 8) {
+                return 8;
+            } else {
+                return percentage;
+            }
         };
 
         this.setState((state) => ({
@@ -155,8 +165,9 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
     onDurationChange = (id: string, diff: number) => {
         this.udpateEditorElementsState(
             (element) => {
-                if (element.id === id) {
-                    element.duration = element.duration + diff;
+                const newDuration = element.duration + diff;
+                if (element.id === id && !(newDuration <= 0)) {
+                    element.duration = newDuration < 15 ? 15 : newDuration;
                 }
             },
             () => {

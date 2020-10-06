@@ -4,6 +4,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+
     input {
         background: none;
         font-size: 2rem;
@@ -11,11 +12,13 @@
         color: $color-off-white;
         border: none;
     }
-      &--editor-element {
-        position: relative;
 
-        .text-input > input,
+    &--editor-element {
+        position: relative;
+        
+        .text-input,
         .number-input {
+            font-size: 20rem !important;
             z-index: 60;
             transition: transform 0.15s ease-in;
 

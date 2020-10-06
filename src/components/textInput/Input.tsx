@@ -1,7 +1,7 @@
 import React, { FormEvent, SyntheticEvent, useRef, useState, useEffect, RefObject } from 'react';
-import './_textInput.scss';
+import './_input.scss';
 
-type TextInputProps = {
+type InputProps = {
     value: string | number;
     onInputUpdate(value: string | number): void;
     onFocusChange?(isFocused: boolean): void;
@@ -11,7 +11,7 @@ type TextInputProps = {
     step?: number;
 };
 
-const Input: React.FC<TextInputProps> = ({
+const Input: React.FC<InputProps> = ({
     value,
     onInputUpdate,
     classNameVariant,
@@ -70,6 +70,7 @@ const Input: React.FC<TextInputProps> = ({
                 onChange={onValueChange}
                 ref={formInputRef}
                 name="textInput"
+                autoComplete="off"
             />
         </div>
     );
@@ -101,6 +102,7 @@ const Input: React.FC<TextInputProps> = ({
                     step={step}
                     onChange={onValueChange}
                     ref={formInputRef}
+                    autoComplete="off"
                     name="numberInput"
                 />
                 <button
