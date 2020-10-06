@@ -123,8 +123,8 @@ class WorkoutPlayer extends Component<WorkoutPlayerProps, WorkoutPlayerState> {
     get lastStepIndex() {
         const workout = this.props.workout;
         if (!workout) return 0;
-        const { iterations, pattern } = workout;
-        return pattern.length * iterations + 1;
+        const { coreIterations, pattern } = workout;
+        return pattern.length * coreIterations + 1;
     }
 
     get currentIteration(): number {

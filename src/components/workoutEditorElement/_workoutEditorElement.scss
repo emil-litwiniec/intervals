@@ -77,6 +77,10 @@ $selection-color: white;
         color: white;
         opacity: 0.8;
         z-index: 150;
+
+        &--iterations {
+            font-size: 2rem;
+        }
     }
 
     & .button--editor-element {

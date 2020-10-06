@@ -7,7 +7,7 @@ import { currentWorkout, Interval, saveWorkout, WorkoutData } from '@/store/slic
 
 import { Button } from '../button';
 import WorkoutEditorElement from '@/components/workoutEditorElement/WorkoutEditorElement';
-import TextInput from '../textInput/TextInput';
+import Input from '../textInput/TextInput';
 import { mockEditorElements } from './mockData';
 import { ColorResult } from 'react-color';
 import { IconPlay } from '@/misc/icons';
@@ -19,7 +19,8 @@ type WorkoutEditorState = {
     editorElements: EditorElement[];
     workoutName: string;
     workoutId: string;
-    iterations: number;
+    coreIterations: number;
+    setIterations: number;
 };
 
 type DispatchProps = {
@@ -67,7 +68,8 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
                 : [...mockEditorElements],
             workoutName: props.workout ? props.workout.title : 'New Workout',
             workoutId: props.workout ? props.workout.id || uuidv4() : uuidv4(),
-            iterations: props.workout ? props.workout.iterations : 1,
+            coreIterations: props.workout ? props.workout.coreIterations : 1,
+            setIterations: props.workout ? props.workout.setIterations : 1,
         };
     }
 
@@ -87,6 +89,7 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
                     updateOffsetTop={this.updateOffsetTop}
                     onTextInputUpdate={this.onTextInputUpdate}
                     parentOffsetTop={this.wrapperRef.current?.offsetTop || 0}
+                    coreIterations={this.state.coreIterations}
                     ref={newRef}
                     index={index}
                     lastIndex={array.length - 1}
@@ -265,13 +268,19 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
     };
 
     addEmptyElement = () => {
-        this.setState((state) => {
-            const newElement = new EditorElement();
+        this.setState(
+            (state) => {
+                const newElement = new EditorElement();
 
-            return {
-                editorElements: [...state.editorElements, newElement],
-            };
-        }, this.calculateProportions);
+                return {
+                    editorElements: [...state.editorElements, newElement],
+                };
+            },
+            () => {
+                this.calculateProportions();
+                this.updateCoreBorders();
+            }
+        );
     };
 
     onTextInputUpdate = (id: string, value: string) => {
@@ -294,7 +303,8 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
             id: this.state.workoutId,
             title: this.state.workoutName,
             totalDuration: this.totalDuration,
-            iterations: this.state.iterations,
+            coreIterations: this.state.coreIterations,
+            setIterations: this.state.setIterations,
             pattern: [
                 ...editorElements
                     .splice(1, editorElements.length - 2)
@@ -307,22 +317,57 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
         this.props.history.push(`/workout/${this.state.workoutId}`);
     };
 
+    onSetIterationsUpdate = (value: string) => {
+        this.setState({
+            setIterations: Number(value),
+        });
+    };
+
+    onCoreIterationsUpdate = (value: string) => {
+        this.setState({
+            coreIterations: Number(value),
+        });
+    };
+
     render() {
+        const editorInputs = (
+            <div className="workout-editor__inputs">
+                <Input
+                    value={this.state.workoutName}
+                    onInputUpdate={this.onWorkoutNameUpdate}
+                    label="Workout Title: "
+                    classNameVariant="editor-inputs"
+                />
+
+                <Input
+                    value={this.state.setIterations}
+                    onInputUpdate={this.onSetIterationsUpdate}
+                    type="number"
+                    label="Total Sets: "
+                    classNameVariant="editor-inputs"
+                />
+
+                <Input
+                    value={this.state.coreIterations}
+                    onInputUpdate={this.onCoreIterationsUpdate}
+                    type="number"
+                    label="Core Iterations per set "
+                    classNameVariant="editor-inputs"
+                />
+            </div>
+        );
+
         return (
             <section className="workout-editor">
                 <div className="workout-editor__elements" ref={this.wrapperRef}>
                     {this.editorElements}
                 </div>
                 <div className="workout-editor__button-wrapper">
+                    {editorInputs}
                     <Button handleClick={this.addEmptyElement}>
                         <div>Add interval</div>
                     </Button>
-                    <TextInput
-                        value={this.state.workoutName}
-                        onTextInputUpdate={this.onWorkoutNameUpdate}
-                        label="Workout Title: "
-                        classNameVariant="editor-element"
-                    />
+
                     <Button
                         additionalClassName="workout-editor__play-btn"
                         handleClick={this.saveData}

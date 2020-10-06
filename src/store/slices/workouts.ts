@@ -14,7 +14,8 @@ export type WorkoutData = {
     id: string;
     title: string;
     totalDuration: number;
-    iterations: number;
+    coreIterations: number;
+    setIterations: number;
     pattern: Interval[];
     startInterval: Interval;
     endInterval: Interval;

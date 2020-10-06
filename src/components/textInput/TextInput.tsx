@@ -2,18 +2,22 @@ import React, { FormEvent, SyntheticEvent, useRef, useState, useEffect, RefObjec
 import './_textInput.scss';
 
 type TextInputProps = {
-    value: string;
-    onTextInputUpdate(value: string): void;
+    value: string | number;
+    onInputUpdate(value: string | number): void;
     onFocusChange?(isFocused: boolean): void;
     classNameVariant?: string;
     label?: string;
+    type?: string;
+    step?: number;
 };
 
-const TextInput: React.FC<TextInputProps> = ({
+const Input: React.FC<TextInputProps> = ({
     value,
-    onTextInputUpdate,
+    onInputUpdate,
     classNameVariant,
     label,
+    type = 'text',
+    step = 1,
     ...props
 }) => {
     const [currentValue, setCurrentValue] = useState(value);
@@ -21,14 +25,17 @@ const TextInput: React.FC<TextInputProps> = ({
 
     const onValueChange = (e: SyntheticEvent<EventTarget>) => {
         const inputValue = (e.target as HTMLInputElement).value;
-        setCurrentValue(inputValue);
+        const castToNumber = typeof currentValue === 'number';
+        let newValue = castToNumber ? Number(inputValue) : inputValue;
+
+        setCurrentValue(newValue);
     };
 
     const onSubmit = (e?: FormEvent) => {
         e && e.preventDefault();
         formInputRef.current?.blur();
 
-        onTextInputUpdate(currentValue);
+        onInputUpdate(currentValue);
     };
 
     const onFocus = () => {
@@ -37,8 +44,8 @@ const TextInput: React.FC<TextInputProps> = ({
     };
 
     const onBlur = () => {
-        if (!props.onFocusChange) return;
         onSubmit();
+        if (!props.onFocusChange) return;
 
         props.onFocusChange(false);
     };
@@ -53,10 +60,9 @@ const TextInput: React.FC<TextInputProps> = ({
         };
     });
 
-    const classVariant = classNameVariant ? `text-input--${classNameVariant}` : '';
-
-    return (
-        <form onSubmit={onSubmit} className={`text-input ${classVariant}`}>
+    const classVariant = classNameVariant ? `input--${classNameVariant}` : '';
+    const textInput = type === 'text' && (
+        <div className="text-input input__wrapper">
             {label && <label htmlFor="textInput">{label}</label>}
             <input
                 type="text"
@@ -65,9 +71,54 @@ const TextInput: React.FC<TextInputProps> = ({
                 ref={formInputRef}
                 name="textInput"
             />
-            <button type="submit"></button>
+        </div>
+    );
+
+    const handleIncrement = () => {
+        if (typeof currentValue !== 'number') return;
+        setCurrentValue(currentValue + step);
+    };
+
+    const handleDecrement = () => {
+        if (typeof currentValue !== 'number') return;
+        setCurrentValue(currentValue - step);
+    };
+
+    const numberInput = type === 'number' && (
+        <div className="input__wrapper">
+            {label && <label htmlFor="numberInput">{label}</label>}
+            <div className="number-input">
+                <button
+                    className="number-input__btn number-input__btn--decrement"
+                    onClick={handleDecrement}
+                >
+                    -
+                </button>
+                <input
+                    type="number"
+                    value={currentValue}
+                    min="1"
+                    step={step}
+                    onChange={onValueChange}
+                    ref={formInputRef}
+                    name="numberInput"
+                />
+                <button
+                    className="number-input__btn number-input__btn--increment"
+                    onClick={handleIncrement}
+                >
+                    +
+                </button>
+            </div>
+        </div>
+    );
+
+    return (
+        <form onSubmit={onSubmit} className={`input ${classVariant}`}>
+            {textInput}
+            {numberInput}
         </form>
     );
 };
 
-export default TextInput;
+export default Input;

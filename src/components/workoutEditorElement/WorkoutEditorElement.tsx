@@ -8,7 +8,7 @@ import Button from '@/components/button/Button';
 
 import { ColorResult, CirclePicker } from 'react-color';
 
-import TextInput from '@/components/textInput/TextInput';
+import Input from '@/components/textInput/TextInput';
 import { BorderVariant } from './EditorElement';
 
 export interface EditorElementProps {
@@ -18,6 +18,7 @@ export interface EditorElementProps {
     color: string;
     height: number;
     offsetTop: number;
+    coreIterations: number;
     swapIndex: number;
     swapHighlight: boolean;
     borderVariant: BorderVariant;
@@ -162,7 +163,11 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps, Wo
             case 0:
                 return <span className={className}>PREPARE</span>;
             case 1:
-                return <span className={className}>CORE x2</span>;
+                return (
+                    <span className={className}>
+                        CORE x <span className={className + '--iterations'}>{this.props.coreIterations}</span>
+                    </span>
+                );
             case this.props.lastIndex:
                 return <span className={className}>REST (time between sets)</span>;
             default:
@@ -212,10 +217,10 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps, Wo
                         />
                     )}
                 </div>
-                <TextInput
+                <Input
                     classNameVariant="editor-element"
                     value={mainTitle}
-                    onTextInputUpdate={this.onTextInputUpdate}
+                    onInputUpdate={this.onTextInputUpdate}
                     onFocusChange={this.onInputFocusChange}
                 />
                 <p className="editor-element__duration no-select">

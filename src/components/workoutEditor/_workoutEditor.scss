@@ -13,6 +13,13 @@
         margin-top: 7.2rem;
     }
 
+    &__inputs {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 11rem;
+    }
+
     &__button-wrapper {
         flex: 1;
         display: flex;
@@ -30,6 +37,8 @@
     &__play-btn {
         .icon {
             transition: transform 0.15s ease-in-out;
+            height: 4.5rem;
+            width: 4.5rem;
         }
 
         &:hover {
