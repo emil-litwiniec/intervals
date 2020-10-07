@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import './_workoutListElement.scss';
 import { IconPlay, IconEdit, IconDelete } from '@/misc/icons';
 import Button from '@/components/button/Button';
-import { formatSecondsToMinutes } from '@/utils/format';
+import { formatSecondsToMinutesLeftRounded } from '@/utils/format';
 import { useDispatch } from 'react-redux';
 import { deleteWorkout } from '@/store/slices/workouts';
 
@@ -82,7 +82,7 @@ const WorkoutListElement: React.FC<WorkoutProps> = ({
                     <h3 className="workout-list-element__title">{workoutName}</h3>
                     <div className="workout-list-element__inner-group">
                         <span className="workout-list-element__duration">
-                            {formatSecondsToMinutes(workoutDuration || 0)}
+                            {formatSecondsToMinutesLeftRounded(workoutDuration || 0)} min
                         </span>
                         <Button handleClick={handlePlayButtonClicked} variant="play">
                             <IconPlay className="workout-list-element__icon" />

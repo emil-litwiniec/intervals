@@ -15,7 +15,7 @@
 
     &--editor-element {
         position: relative;
-        
+
         .text-input,
         .number-input {
             font-size: 20rem !important;
@@ -45,7 +45,7 @@
             transition: transform 0.15s ease-in;
             min-width: 18rem;
             width: min-content;
-            height: 3.2rem;
+            min-height: 3.2rem;
             border-radius: 5px;
             border: 2px solid rgba(255, 255, 255, 0.4);
 
@@ -68,6 +68,44 @@
             justify-content: space-between;
             align-items: center;
             width: 100%;
+        }
+    }
+
+    &--subsection-title {
+        width: 100%;
+
+        .input__wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        label {
+            font-size: 1.5rem;
+            color: white;
+            width: 2rem;
+            text-align: left;
+            margin-right: 2rem;
+        }
+
+        input {
+            z-index: 60;
+            transition: transform 0.15s ease-in;
+            font-size: 1.5rem;
+            min-width: 18rem;
+            width: 100%;
+            min-height: 3.2rem;
+            border-radius: 5px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            line-height: 2rem;
+
+            &:hover,
+            &:focus,
+            &:focus-within,
+            &:active {
+                transform: scale(1.1);
+            }
         }
     }
 }

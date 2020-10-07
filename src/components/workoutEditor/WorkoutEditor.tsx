@@ -1,4 +1,4 @@
-import React, { createRef, Dispatch, RefObject } from 'react';
+import React, { createRef, RefObject } from 'react';
 import { connect } from 'react-redux';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
@@ -7,7 +7,7 @@ import { currentWorkout, Interval, saveWorkout, WorkoutData } from '@/store/slic
 
 import { Button } from '../button';
 import WorkoutEditorElement from '@/components/workoutEditorElement/WorkoutEditorElement';
-import Input from '../textInput/Input';
+import Input from '../input/Input';
 import { mockEditorElements } from './mockData';
 import { ColorResult } from 'react-color';
 import { IconPlay } from '@/misc/icons';
@@ -89,6 +89,7 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
                     onDelete={this.onDelete}
                     updateOffsetTop={this.updateOffsetTop}
                     onTextInputUpdate={this.onTextInputUpdate}
+                    onSubsectionTitlesUpdate={this.onSubsectionTitlesUpdate}
                     parentOffsetTop={this.wrapperRef.current?.offsetTop || 0}
                     coreIterations={this.state.coreIterations}
                     ref={newRef}
@@ -308,6 +309,14 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
         });
     };
 
+    onSubsectionTitlesUpdate = (id: string, subsectionTitles: string[]) => {
+        this.udpateEditorElementsState((el) => {
+            if (el.id === id) {
+                el.subsectionTitles = subsectionTitles;
+            }
+        });
+    };
+
     saveData = () => {
         const editorElements = [...this.state.editorElements];
         let data: WorkoutData = {
@@ -369,24 +378,26 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
         );
 
         return (
-            <section className="workout-editor">
-                <div className="workout-editor__elements" ref={this.wrapperRef}>
-                    {this.editorElements}
-                </div>
-                <div className="workout-editor__button-wrapper">
-                    {editorInputs}
-                    <Button handleClick={this.addEmptyElement}>
-                        <div>Add interval</div>
-                    </Button>
+            <>
+                <section className="workout-editor">
+                    <div className="workout-editor__elements" ref={this.wrapperRef}>
+                        {this.editorElements}
+                    </div>
+                    <div className="workout-editor__button-wrapper">
+                        {editorInputs}
+                        <Button handleClick={this.addEmptyElement}>
+                            <div>Add interval</div>
+                        </Button>
 
-                    <Button
-                        additionalClassName="workout-editor__play-btn"
-                        handleClick={this.saveData}
-                    >
-                        <IconPlay />
-                    </Button>
-                </div>
-            </section>
+                        <Button
+                            additionalClassName="workout-editor__play-btn"
+                            handleClick={this.saveData}
+                        >
+                            <IconPlay />
+                        </Button>
+                    </div>
+                </section>
+            </>
         );
     }
 }

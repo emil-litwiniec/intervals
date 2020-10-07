@@ -116,7 +116,7 @@ class Timer extends Component<TimerProps, TimerState> {
             <div className={`timer__wrapper ${parentClassName}`}>
                 <span className="timer__text-display">
                     {showMinsLeft
-                        ? formatSecondsToMinutesLeftRounded(seconds)
+                        ? ` ${formatSecondsToMinutesLeftRounded(seconds)} min left`
                         : formatSecondsToMinutes(seconds)}
                 </span>
 

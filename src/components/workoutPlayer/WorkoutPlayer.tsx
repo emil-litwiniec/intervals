@@ -99,7 +99,7 @@ class WorkoutPlayer extends Component<WorkoutPlayerProps, WorkoutPlayerState> {
         if (this.state.currentStepIndex === 0) return;
         this.setState((state) => {
             const shouldSetPreviousSet =
-                this.state.currentStepIndex === 1 && this.state.currentSetIteration >= 1;
+                this.state.currentStepIndex === 1 && this.state.currentSetIteration > 1;
 
             const newStepIndex = shouldSetPreviousSet
                 ? this.lastStepIndex

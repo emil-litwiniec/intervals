@@ -13,5 +13,5 @@ export const formatSecondsToMinutes = (timeInSeconds: number): string => {
 export const formatSecondsToMinutesLeftRounded = (timeInSeconds: number): string => {
     const minutes = Math.ceil(timeInSeconds / 60);
 
-    return `${minutes} min left`;
+    return `${minutes}`;
 };

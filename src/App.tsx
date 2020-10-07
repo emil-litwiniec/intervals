@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Link, Switch, Route } from 'react-router-dom';
 import { MainView, EditView, WorkoutView } from '@/views';
 import handleFocusOutline from '@/utils/handleFocusOutline';
-
 import './styles/App.scss';
 import Logotype from './misc/Logotype';
 

@@ -39,6 +39,15 @@
             width: 4rem;
         }
     }
+
+    &--editor-element {
+        color: white;
+        margin: 0 2rem;
+
+        span {
+            display: inline-block;
+        }
+    }
 }
 
 .expand {

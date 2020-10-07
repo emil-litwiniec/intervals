@@ -1,0 +1,23 @@
+.subsection-titles-editor {
+    width: 60rem;
+    height: 80rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+
+    &__main-title {
+        font-size: 3rem;
+        color: white;
+    }
+
+    &__list {
+        width: 100%;
+        padding: 2rem 12rem;
+
+        li {
+            margin: 2rem 0;
+        }
+    }
+}

@@ -5,16 +5,20 @@ import { formatSecondsToMinutes } from '@/utils/format';
 import './_workoutEditorElement.scss';
 import { IconColorFill, IconDelete } from '@/misc/icons';
 import Button from '@/components/button/Button';
+import Modal from '@/components/modal/Modal';
+
+import SubsectionTitlesEditor from '@/components/subsectionTitlesEditor/SubsectionTitlesEditor';
 
 import { ColorResult, CirclePicker } from 'react-color';
 
-import Input from '@/components/textInput/Input';
+import Input from '@/components/input/Input';
 import { BorderVariant } from './EditorElement';
 import { roundBy5 } from '@/utils/math';
 
 export interface EditorElementProps {
     id: string;
     mainTitle: string;
+    subsectionTitles: string[];
     duration: number;
     color: string;
     height: number;
@@ -33,6 +37,7 @@ export interface EditorElementProps {
     onDelete(id: string): void;
     updateOffsetTop(id: string, offsetTop: number): void;
     onTextInputUpdate(id: string, value: string): void;
+    onSubsectionTitlesUpdate(id: string, subsectionTitles: string[]): void;
 }
 
 type DraggableComponentBaseState = {
@@ -45,6 +50,7 @@ type DraggableComponentBaseState = {
 
 type WorkoutEditorState = DraggableComponentBaseState & {
     showPicker: boolean;
+    showSubsectionTitlesModal: boolean;
     inputFocused: boolean;
 };
 
@@ -59,6 +65,7 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps, Wo
             lastUpdatePosition: new Point(),
             showPicker: false,
             inputFocused: false,
+            showSubsectionTitlesModal: false,
         };
     }
     dragThreshold = {
@@ -178,7 +185,17 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps, Wo
     }
 
     render() {
-        const { mainTitle, duration, color = '#f3f3f3', height, borderVariant } = this.props;
+        const {
+            mainTitle,
+            duration,
+            color = '#f3f3f3',
+            height,
+            borderVariant,
+            subsectionTitles = [],
+            coreIterations,
+            lastIndex,
+            index,
+        } = this.props;
         const swapHighlightClassname = this.props.swapHighlight ? 'swap-highlight' : '';
         const moveClassname = this.isVerticalDrag ? 'moving' : '';
         const style: CSSProperties & { '--color': string } = {
@@ -190,15 +207,33 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps, Wo
             style.zIndex = 200;
         }
 
-        return (
+        const shouldShowSubsectionTitlesEditor = index !== 0 && index !== lastIndex;
+
+        const subsectionTitlesEditButton = shouldShowSubsectionTitlesEditor && (
+            <Button
+                handleClick={(event) => this.setState({ showSubsectionTitlesModal: true })}
+                variant="editor-element"
+            >
+                <span>Set subsection names</span>
+            </Button>
+        );
+        const colorPicker = this.state.showPicker && (
+            <CirclePicker
+                color={color}
+                onChange={(color: ColorResult) => this.props.onColorChange(this.props.id, color)}
+                className="editor-element__picker"
+            />
+        );
+
+        const editorElement = (
             <div
                 className={`editor-element ${swapHighlightClassname} ${moveClassname} ${borderVariant}`}
                 style={style}
                 ref={this.container}
-                data-id={this.props.id}
             >
                 {this.instruction}
                 <div className="editor-element__button-group">
+                    {subsectionTitlesEditButton}
                     <Button handleClick={() => this.togglePicker()} variant="editor-element">
                         <IconColorFill className="editor-element__color" />
                     </Button>
@@ -209,15 +244,7 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps, Wo
                         <IconDelete className="editor-element__delete" />
                     </Button>
 
-                    {this.state.showPicker && (
-                        <CirclePicker
-                            color={color}
-                            onChange={(color: ColorResult) =>
-                                this.props.onColorChange(this.props.id, color)
-                            }
-                            className="editor-element__picker"
-                        />
-                    )}
+                    {colorPicker}
                 </div>
                 <Input
                     classNameVariant="editor-element"
@@ -235,6 +262,32 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps, Wo
                     <p className="no-select">{formatSecondsToMinutes(roundBy5(duration))}</p>
                 </div>
             </div>
+        );
+
+        const subsectionTitlesModal = shouldShowSubsectionTitlesEditor && (
+            <Modal
+                handleClose={() => {
+                    this.setState({ showSubsectionTitlesModal: false });
+                }}
+                isOpen={this.state.showSubsectionTitlesModal}
+            >
+                <SubsectionTitlesEditor
+                    mainTitle={mainTitle}
+                    color={color}
+                    subsectionTitles={subsectionTitles}
+                    coreIterations={coreIterations}
+                    onSubsectionTitlesUpdate={(subsectionTitles: string[]) =>
+                        this.props.onSubsectionTitlesUpdate(this.props.id, subsectionTitles)
+                    }
+                />
+            </Modal>
+        );
+
+        return (
+            <>
+                {subsectionTitlesModal}
+                {editorElement}
+            </>
         );
     }
 }
