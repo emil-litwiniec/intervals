@@ -200,7 +200,9 @@ class WorkoutPlayer extends Component<WorkoutPlayerProps, WorkoutPlayerState> {
                         </span>
                         <ToggleSoundButton className="workout-player__toggle-sound" />
                     </div>
-
+                    <span className="workout-player__workout-title">
+                        {this.props.workout?.title}
+                    </span>
                     <Timer
                         initialSeconds={currentInterval.duration}
                         id={currentInterval.id}

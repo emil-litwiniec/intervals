@@ -13,7 +13,7 @@ export const mockStoreWorkoutData: WorkoutsState = {
     xs34: {
         id: 'xs34',
         title: 'Funk!',
-        totalDuration: 4500,
+        totalDuration: 1440,
         coreIterations: 10,
         setIterations: 2,
         pattern: [
@@ -46,20 +46,22 @@ export const mockStoreWorkoutData: WorkoutsState = {
         startInterval: {
             id: 'poqiwe',
             mainTitle: 'Warm up',
-            duration: 2 * 60,
+            subsectionTitles: [],
+            duration: 120,
             color: '#5F9EA0',
         },
         endInterval: {
             id: 'aposuipiojp',
             mainTitle: 'Cool down',
+            subsectionTitles: [],
             duration: 60,
             color: '#0a2351',
         },
     },
     pg423: {
         id: 'pg423',
-        title: 'SomeTitle',
-        totalDuration: 4500,
+        title: 'My Workout',
+        totalDuration: 930,
         coreIterations: 2,
         setIterations: 3,
         pattern: [
@@ -68,7 +70,7 @@ export const mockStoreWorkoutData: WorkoutsState = {
                 mainTitle: 'High Interval',
                 subsectionTitles: ['Push-ups', 'Sit-ups'],
                 duration: 120,
-                color: '#f3f3f3',
+                color: '#009688',
             },
             {
                 id: 'sdawqq',
@@ -81,14 +83,16 @@ export const mockStoreWorkoutData: WorkoutsState = {
         startInterval: {
             id: 'poqiwe',
             mainTitle: 'Warm up',
+            subsectionTitles: [],
             duration: 30,
-            color: '#f3f3f3',
+            color: '#673ab7',
         },
         endInterval: {
             id: 'aposuipiojp',
             mainTitle: 'Cool down',
+            subsectionTitles: [],
             duration: 30,
-            color: '#f3f3f3',
+            color: '#3f51b5',
         },
     },
 };

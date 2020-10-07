@@ -3,10 +3,10 @@ const localStorageKey = 'workoutsData';
 export const loadState = (): any | null => {
     try {
         const json = localStorage.getItem(localStorageKey);
-        if (!json) return null;
+        if (!json) return {};
         return JSON.parse(json);
     } catch (err) {
-        return null;
+        return {};
     }
 };
 

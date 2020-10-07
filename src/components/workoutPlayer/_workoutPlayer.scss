@@ -108,4 +108,14 @@
         left: 50%;
         z-index: 250;
     }
+
+    &__workout-title {
+        position: absolute;
+        top: 4rem;
+        left: 50%;
+        font-size: 3rem;
+        color: white;
+        transform: translateX(-50%);
+        opacity: 0.6;
+    }
 }

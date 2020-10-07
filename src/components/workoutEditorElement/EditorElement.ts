@@ -5,6 +5,7 @@ export enum BorderVariant {
     TOP = 'selection-top',
     BOTTOM = 'selection-bottom',
     SIDES = 'selection-sides',
+    ALL = 'selection-all',
     NONE = '',
 }
 

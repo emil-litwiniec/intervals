@@ -149,6 +149,12 @@ $selection-color: white;
         }
     }
 
+    &.selection-all {
+        border: $selection-width solid $selection-color;
+        border-top-width: $selection-width + 1;
+        border-bottom-width: $selection-width + 1;
+    }
+
     &.selection-top {
         border: $selection-width solid $selection-color;
         border-top-width: $selection-width + 1;

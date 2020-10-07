@@ -10,7 +10,6 @@
     &__elements {
         position: relative;
         flex-basis: 75%;
-        margin-top: 7.2rem;
     }
 
     &__inputs {
@@ -51,6 +50,19 @@
             .icon {
                 transform: translate(4px);
             }
+        }
+    }
+
+    &__total-duration-display {
+        font-size: 2rem;
+        display: flex;
+        height: 7rem;
+        align-items: center;
+        margin-left: 1rem;
+        color: white;
+
+        & span:last-child {
+            margin-left: 2rem;
         }
     }
 }

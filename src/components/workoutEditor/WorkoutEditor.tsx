@@ -15,6 +15,7 @@ import EditorElement, { BorderVariant } from '@/components/workoutEditorElement/
 import { roundBy5 } from '@/utils/math';
 
 import './_workoutEditor.scss';
+import { formatSecondsToMinutesLeftRounded } from '@/utils/format';
 
 type WorkoutEditorState = {
     editorElements: EditorElement[];
@@ -106,32 +107,61 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
         this.updateCoreBorders();
     }
 
-    get totalDuration(): number {
+    get totalDurationForHeightCalculation(): number {
         return this.state.editorElements.reduce((acc, curr): any => {
             return { duration: acc.duration + curr.duration };
         }).duration;
     }
 
+    get totalDuration(): number {
+        const elements = [...this.state.editorElements];
+        const firstElementDuration = elements[0].duration;
+        const lastElementDuration = elements[elements.length - 1].duration;
+
+        const singleCoreDuration = elements
+            .splice(1, elements.length - 2)
+            .reduce((acc, curr): any => {
+                return { duration: acc.duration + curr.duration };
+            }).duration;
+
+        const totalCoresDuration = singleCoreDuration * this.state.coreIterations;
+
+        const totalSetsDuration =
+            (totalCoresDuration + lastElementDuration) * this.state.setIterations;
+
+        return firstElementDuration + totalSetsDuration;
+    }
+
     updateCoreBorders = () => {
-        this.udpateEditorElementsState((el, index, array) => {
-            switch (index) {
-                case 0:
+        if (this.state.editorElements.length === 3) {
+            this.udpateEditorElementsState((el, index) => {
+                if (index === 1) {
+                    el.borderVariant = BorderVariant.ALL;
+                } else {
                     el.borderVariant = BorderVariant.NONE;
-                    break;
-                case array.length - 1:
-                    el.borderVariant = BorderVariant.NONE;
-                    break;
-                case array.length - 2:
-                    el.borderVariant = BorderVariant.BOTTOM;
-                    break;
-                case 1:
-                    el.borderVariant = BorderVariant.TOP;
-                    break;
-                default:
-                    el.borderVariant = BorderVariant.SIDES;
-                    break;
-            }
-        });
+                }
+            });
+        } else {
+            this.udpateEditorElementsState((el, index, array) => {
+                switch (index) {
+                    case 0:
+                        el.borderVariant = BorderVariant.NONE;
+                        break;
+                    case array.length - 1:
+                        el.borderVariant = BorderVariant.NONE;
+                        break;
+                    case array.length - 2:
+                        el.borderVariant = BorderVariant.BOTTOM;
+                        break;
+                    case 1:
+                        el.borderVariant = BorderVariant.TOP;
+                        break;
+                    default:
+                        el.borderVariant = BorderVariant.SIDES;
+                        break;
+                }
+            });
+        }
     };
 
     durationStep = (duration: number) => {
@@ -140,7 +170,7 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
 
     calculateProportions = () => {
         const calcPercentage = (duration: number): number => {
-            const percentage = 100 / (this.totalDuration / duration);
+            const percentage = 100 / (this.totalDurationForHeightCalculation / duration);
             if (percentage < 8) {
                 return 8;
             } else {
@@ -189,6 +219,7 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
                 clientY > element.offsetTop + element.height - threshold &&
                 clientY < element.offsetTop + element.height + threshold;
 
+            // TODO: adjust block swapping mechanism
             if (shouldSwap) {
                 this.udpateEditorElementsState((el, index) => {
                     if (index === elementIndex) {
@@ -242,17 +273,24 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
     };
 
     onDelete = (id: string) => {
+        if (this.editorElements.length === 3) return;
         const referenceIndex = this.references.findIndex((el) => el.current?.props.id === id);
         this.references.splice(referenceIndex, 1);
-        this.setState((state) => {
-            const newEditorElements = [...state.editorElements];
-            const elementIndex = newEditorElements.findIndex((el) => el.id === id);
-            newEditorElements.splice(elementIndex, 1);
+        this.setState(
+            (state) => {
+                const newEditorElements = [...state.editorElements];
+                const elementIndex = newEditorElements.findIndex((el) => el.id === id);
+                newEditorElements.splice(elementIndex, 1);
 
-            return {
-                editorElements: newEditorElements,
-            };
-        }, this.calculateProportions);
+                return {
+                    editorElements: newEditorElements,
+                };
+            },
+            () => {
+                this.calculateProportions();
+                this.updateCoreBorders();
+            }
+        );
     };
 
     updateOffsetTop = (id: string, offsetTop: number) => {
@@ -380,6 +418,10 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
         return (
             <>
                 <section className="workout-editor">
+                    <div className="workout-editor__total-duration-display">
+                        <span>Total duration:</span>
+                        <span>~ {formatSecondsToMinutesLeftRounded(this.totalDuration)} min</span>
+                    </div>
                     <div className="workout-editor__elements" ref={this.wrapperRef}>
                         {this.editorElements}
                     </div>
