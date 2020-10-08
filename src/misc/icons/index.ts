@@ -8,3 +8,4 @@ export { default as IconPrev } from './IconPrev';
 export { default as IconColorFill } from './IconColorFill';
 export { default as IconSoundOn } from './IconSoundOn';
 export { default as IconSoundOff } from './IconSoundOff';
+export { default as IconClose } from './IconClose';

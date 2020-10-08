@@ -37,10 +37,9 @@ $z-index--modal: 900;
             top: 0;
             right: 0;
 
-            span {
-                display: inline-block;
-                font-size: 2rem;
-                color: white;
+            .icon {
+                width: 2.5rem;
+                height: 2.5rem;
             }
         }
     }
