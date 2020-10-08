@@ -64,6 +64,10 @@ class Timer extends Component<TimerProps, TimerState> {
         }
     }
 
+    componentWillUnmount() {
+        this.clear();
+    }
+
     reset = () => {
         this.clear();
         this.setState({ millisecondsLeft: this.props.initialSeconds * 1000 });
@@ -77,6 +81,7 @@ class Timer extends Component<TimerProps, TimerState> {
     };
 
     start = () => {
+        if (this.state.millisecondsLeft === 0) return;
         !this.props.isMutted && soundHigh.play();
         this.clear();
         this.setState((state) => ({
@@ -99,6 +104,7 @@ class Timer extends Component<TimerProps, TimerState> {
     };
 
     setMillisecondsLeft = (seconds: number) => {
+        if (seconds === 0) return;
         this.setState({ millisecondsLeft: seconds * 1000 });
     };
 

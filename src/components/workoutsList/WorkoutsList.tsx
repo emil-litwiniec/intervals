@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import WorkoutListElement from '@/components/workoutListElement/WorkoutListElement';
 import './_workoutsList.scss';
 import { WorkoutData, workoutsAsArray, WorkoutsState } from '@/store/slices/workouts';

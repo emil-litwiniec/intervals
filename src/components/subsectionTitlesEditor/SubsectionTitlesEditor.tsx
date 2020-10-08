@@ -46,7 +46,7 @@ const SubsectionTitlesEditor: React.FC<SubsectionTilesEditorProps> = ({
 
     useEffect(() => {
         onSubsectionTitlesUpdate(tempSubsectionTitles);
-    }, [tempSubsectionTitles]);
+    }, [tempSubsectionTitles, onSubsectionTitlesUpdate]);
 
     const handleInputUpdate = (index: number, value: string) => {
         setTempSubsectionTitles(

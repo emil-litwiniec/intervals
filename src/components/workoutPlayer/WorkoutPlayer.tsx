@@ -26,6 +26,7 @@ type WorkoutPlayerProps = RouteComponentProps & {
 class WorkoutPlayer extends Component<WorkoutPlayerProps, WorkoutPlayerState> {
     intervalTimerCallables: ChildCallables | null = null;
     totalTimerCallables: ChildCallables | null = null;
+    routeChangeTimeout: NodeJS.Timeout | null = null;
     componentDidMount() {}
 
     constructor(props: WorkoutPlayerProps) {
@@ -44,7 +45,15 @@ class WorkoutPlayer extends Component<WorkoutPlayerProps, WorkoutPlayerState> {
         if (hasStepIndexChanged) {
             const isOverLastStepIndex = this.state.currentStepIndex > this.lastStepIndex;
             this.setState({ hasWorkoutFinished: isOverLastStepIndex });
-            isOverLastStepIndex && setTimeout(() => this.props.history.push('/'), 5000);
+            if (isOverLastStepIndex) {
+                this.routeChangeTimeout = setTimeout(() => this.props.history.push('/'), 5000);
+            }
+        }
+    }
+
+    componentWillUnmount() {
+        if (this.routeChangeTimeout) {
+            clearTimeout(this.routeChangeTimeout);
         }
     }
 
@@ -73,6 +82,7 @@ class WorkoutPlayer extends Component<WorkoutPlayerProps, WorkoutPlayerState> {
     };
 
     updateTotalTimer = () => {
+        if (this.state.hasWorkoutFinished) return;
         this.totalTimerCallables?.setMillisecondsLeft(this.totalTimeLeftFromStep);
     };
 

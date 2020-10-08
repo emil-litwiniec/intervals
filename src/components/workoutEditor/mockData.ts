@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
 import { WorkoutsState } from '@/store/slices/workouts';
 import EditorElement from '@/components/workoutEditorElement/EditorElement';
 

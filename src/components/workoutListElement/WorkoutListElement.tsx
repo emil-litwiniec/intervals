@@ -55,7 +55,9 @@ const WorkoutListElement: React.FC<WorkoutProps> = ({
     });
 
     const handleEditAction = () => {
-        history.push(`/edit/${workoutId}`);
+        setTimeout(() => {
+            history.push(`/edit/${workoutId}`);
+        }, 100);
     };
 
     const handleRemoveAction = () => {
