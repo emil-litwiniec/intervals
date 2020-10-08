@@ -171,12 +171,18 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
     calculateProportions = () => {
         const calcPercentage = (duration: number): number => {
             const percentage = 100 / (this.totalDurationForHeightCalculation / duration);
-            if (percentage < 8) {
-                return 8;
+            if (percentage < 6) {
+                return 6;
             } else {
                 return percentage;
             }
         };
+
+        let totalPercentage = 0;
+        for (let i = 0; i < this.state.editorElements.length; i++) {
+            totalPercentage += calcPercentage(this.state.editorElements[i].duration);
+        }
+        if (totalPercentage > 104) return;
 
         this.setState((state) => ({
             editorElements: state.editorElements.map((el) => ({
@@ -215,24 +221,14 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
             const threshold = 15; // in pixels
             const shouldSwap =
                 clientY > element.offsetTop - threshold && clientY < element.offsetTop + threshold;
-            const shouldSwapLastElement =
-                clientY > element.offsetTop + element.height - threshold &&
-                clientY < element.offsetTop + element.height + threshold;
 
-            // TODO: adjust block swapping mechanism
             if (shouldSwap) {
-                this.udpateEditorElementsState((el, index) => {
+                this.udpateEditorElementsState((el, index, array) => {
                     if (index === elementIndex) {
                         el.swapHighlight = true;
                     }
                     if (el.id === id) {
                         el.swapIndex = elementIndex;
-                    }
-                });
-            } else if (shouldSwapLastElement) {
-                this.udpateEditorElementsState((el) => {
-                    if (el.id === id) {
-                        el.swapIndex = elementIndex + 1;
                     }
                 });
             } else {
@@ -302,6 +298,8 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
     };
 
     onPositionUpdate = (id: string, swapIndex: number) => {
+        if (swapIndex === this.state.editorElements.length - 1 || swapIndex === 0) return;
+
         this.setState((state) => {
             const newEditorElements = [...state.editorElements];
             const newElementIndex = newEditorElements.findIndex((el) => el.id === id);

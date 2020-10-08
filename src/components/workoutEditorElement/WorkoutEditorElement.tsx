@@ -91,6 +91,14 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps, Wo
         this.updateOffset();
     }
 
+    get shouldNotMove(): boolean {
+        return (
+            this.props.index === 0 ||
+            this.props.index === this.props.lastIndex ||
+            this.props.lastIndex === 2
+        );
+    }
+
     updatePosition = (clientPosition?: Point): void => {
         if (this.state.inputFocused) return;
 
@@ -106,6 +114,7 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps, Wo
             this.props.onDurationChange(this.props.id, diffX);
             if (this.state.showPicker) this.setState({ showPicker: false });
         } else if (shouldUpdatePosition) {
+            if (this.shouldNotMove) return;
             this.container.current!.style.transform = `translateY(${this.state.position.y}px)`;
             if (clientPosition) {
                 const { y: clientY } = clientPosition;
@@ -197,7 +206,7 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps, Wo
             index,
         } = this.props;
         const swapHighlightClassname = this.props.swapHighlight ? 'swap-highlight' : '';
-        const moveClassname = this.isVerticalDrag ? 'moving' : '';
+        const moveClassname = !this.shouldNotMove && this.isVerticalDrag ? 'moving' : '';
         const style: CSSProperties & { '--color': string } = {
             backgroundColor: color,
             height: `${height}%`,
