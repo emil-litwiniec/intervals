@@ -3,7 +3,7 @@ import DraggableComponentBase from '@/components/draggableComponentBase/Draggabl
 import { DragDirection, Point } from '@/utils/drag';
 import { formatSecondsToMinutes } from '@/utils/format';
 import './_workoutEditorElement.scss';
-import { IconColorFill, IconDelete } from '@/misc/icons';
+import { IconColorFill, IconDelete, IconEdit } from '@/misc/icons';
 import Button from '@/components/button/Button';
 import Modal from '@/components/modal/Modal';
 
@@ -223,7 +223,7 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps, Wo
                 handleClick={(event) => this.setState({ showSubsectionTitlesModal: true })}
                 variant="editor-element"
             >
-                <span>Set subsection names</span>
+                <IconEdit />
             </Button>
         );
         const colorPicker = this.state.showPicker && (
@@ -255,15 +255,17 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps, Wo
 
                     {colorPicker}
                 </div>
-                <Input
-                    classNameVariant="editor-element"
-                    value={mainTitle}
-                    onInputUpdate={this.onTextInputUpdate}
-                    onFocusChange={this.onInputFocusChange}
-                />
-                <p className="editor-element__duration no-select">
-                    {formatSecondsToMinutes(roundBy5(duration))}
-                </p>
+                <div className="editor-element__content-group">
+                    <Input
+                        classNameVariant="editor-element"
+                        value={mainTitle}
+                        onInputUpdate={this.onTextInputUpdate}
+                        onFocusChange={this.onInputFocusChange}
+                    />
+                    <p className="editor-element__duration no-select">
+                        {formatSecondsToMinutes(roundBy5(duration))}
+                    </p>
+                </div>
                 <div
                     className="editor-element__duration-change no-select"
                     style={{ backgroundColor: `${color}` }}

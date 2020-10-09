@@ -9,14 +9,23 @@
 
     &__elements {
         position: relative;
-        flex-basis: 75%;
+        flex: 1;
+
+        @media only screen and (max-width: $breakpoint-md) {
+            flex: unset;
+            flex-basis: 75%;
+        }
     }
 
     &__inputs {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        height: 11rem;
+        height: 20rem;
+
+        @media only screen and (max-width: $breakpoint-md) {
+            width: 30rem;
+        }
     }
 
     &__button-wrapper {
@@ -30,6 +39,10 @@
                 color: $color-off-white;
                 font-size: 3rem;
             }
+        }
+
+        @media only screen and (max-width: $breakpoint-md) {
+            display: none;
         }
     }
 
@@ -55,14 +68,48 @@
 
     &__total-duration-display {
         font-size: 2rem;
+        color: white;
+
+        @media only screen and (max-width: $breakpoint-md) {
+            font-size: 1.5rem;
+        }
+    }
+
+    &__top-bar {
         display: flex;
         height: 7rem;
         align-items: center;
         margin-left: 1rem;
-        color: white;
 
-        & span:last-child {
-            margin-left: 2rem;
+        .button {
+            margin-left: 3rem;
+
+            .icon {
+                width: 2rem;
+                height: 2rem;
+            }
+        }
+
+        @media only screen and (max-width: $breakpoint-md) {
+            height: 5rem;
+        }
+    }
+
+    &__settings-modal {
+        background-color: coral;
+    }
+
+    &__modal {
+        width: 40vw;
+        height: 90vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border-radius: 5px;
+
+        @media only screen and (max-width: $breakpoint-md) {
+            width: 100vw;
         }
     }
 }

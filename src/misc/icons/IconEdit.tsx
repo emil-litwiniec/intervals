@@ -12,7 +12,7 @@ const IconEdit: React.FC<Props> = ({ color = '#f3f3f3', className = 'icon-edit' 
             focusable="false"
             data-prefix="far"
             data-icon="edit"
-            className={className}
+            className={`icon ${className}`}
             role="img"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 576 512"

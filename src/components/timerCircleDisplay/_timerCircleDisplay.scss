@@ -1,13 +1,28 @@
+@import '../../styles/variables';
+
 .timer-circle-display {
     height: min-content;
     display: flex;
     justify-content: center;
     align-items: center;
 
+    @media only screen and (max-width: $breakpoint-md) {
+        width: 170%;
+        min-width: 63rem;
+    }
+
+    @media only screen and (max-width: $breakpoint-sm) {
+        width: 170%;
+        min-width: 48rem;
+    }
+
     svg {
         width: 82rem;
-        height: 82rem;
         transform: rotate(-90deg);
+
+        @media only screen and (max-width: $breakpoint-lg) {
+            width: 70rem;
+        }
 
         circle {
             fill: none;

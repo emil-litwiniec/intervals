@@ -10,9 +10,13 @@
         font-size: 12rem;
         font-family: $font-monospaced;
         color: white;
-        top: 52%;
+        top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
+
+        @media only screen and (max-width: $breakpoint-md) {
+            font-size: 7rem;
+        }
     }
 
     &__circular-display {

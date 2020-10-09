@@ -7,11 +7,35 @@
     flex-direction: column;
     transition: background-color 1s ease-in-out;
 
+    @media only screen and (max-width: $breakpoint-md) {
+        padding: 0 2rem;
+    }
+
     &__controls {
         display: flex;
         justify-content: space-between;
         flex: 1;
         width: 60rem;
+
+        @media only screen and (max-width: $breakpoint-lg) {
+            .button {
+                .icon {
+                    width: 3rem;
+                    height: 3rem;
+                }
+            }
+        }
+
+        @media only screen and (max-width: $breakpoint-md) {
+            width: 100%;
+            max-width: 60rem;
+            flex: none;
+            margin-top: 4rem;
+        }
+
+        @media only screen and (max-width: $breakpoint-sm) {
+            margin-top: 2rem;
+        }
 
         .button {
             transition: 0.4s ease-in-out;
@@ -31,6 +55,10 @@
         align-items: center;
         margin-top: -9rem;
 
+        @media only screen and (max-width: $breakpoint-md) {
+            margin-top: -3rem;
+        }
+
         & * {
             color: white;
         }
@@ -43,13 +71,48 @@
 
     &__interval-title {
         opacity: 0.8;
-        font-size: 2.5rem;
+        font-size: 2.4rem;
+        color: white;
+
+        @media only screen and (max-width: $breakpoint-sm) {
+            font-size: 1.8rem;
+        }
     }
 
     &__subsection-title {
-        margin-top: 4rem;
+        // margin-top: 4rem;
         font-size: 6rem;
         min-height: 6rem;
+        color: white;
+        text-align: center;
+
+        @media only screen and (max-width: $breakpoint-md) {
+            font-size: 3rem;
+            min-height: 3rem;
+        }
+
+        @media only screen and (max-width: $breakpoint-sm) {
+            font-size: 2.5rem;
+            min-height: 2.5rem;
+        }
+    }
+
+    &__title-group {
+        height: 10rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 4rem;
+
+        @media only screen and (max-width: $breakpoint-sm) {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 50rem;
+            bottom: 27%;
+            height: 6rem;
+        }
     }
 
     &__timer {
@@ -57,7 +120,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        margin-top: -4rem;
+        margin-top: -2rem;
     }
 
     &__finished,
@@ -69,10 +132,11 @@
 
     &__additional-info {
         position: absolute;
-        top: -5rem;
+        top: -4rem;
         display: flex;
         justify-content: space-between;
-        width: 50rem;
+        width: 100%;
+        max-width: 50rem;
         align-items: center;
     }
 
@@ -88,6 +152,15 @@
 
     &__timer-container {
         position: relative;
+        margin-top: -5rem;
+
+        @media only screen and (max-width: $breakpoint-md) {
+            width: 100%;
+            margin-top: 13vh;
+        }
+        @media only screen and (max-height: 530px) {
+            margin-top: 0;
+        }
     }
 
     &__step-counter {
@@ -103,19 +176,29 @@
         display: flex;
         justify-content: space-between;
         width: 60%;
+        min-width: 32rem;
         top: 11rem;
         transform: translateX(-50%);
         left: 50%;
         z-index: 250;
+
+        @media only screen and (max-width: $breakpoint-md) {
+            top: 5rem;
+        }
     }
 
     &__workout-title {
         position: absolute;
-        top: 4rem;
+        top: 19rem;
         left: 50%;
         font-size: 3rem;
         color: white;
         transform: translateX(-50%);
         opacity: 0.6;
+
+        @media only screen and (max-width: $breakpoint-md) {
+            top: 15rem;
+            font-size: 2rem;
+        }
     }
 }

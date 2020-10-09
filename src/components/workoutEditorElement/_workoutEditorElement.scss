@@ -11,6 +11,18 @@ $selection-color: white;
     position: relative;
     z-index: 10;
 
+    @media only screen and (max-width: $breakpoint-md) {
+        min-height: 40px;
+        align-items: flex-end;
+        justify-content: flex-start;
+    }
+
+    &__content-group {
+        display: flex;
+        align-items: baseline;
+        margin-bottom: 1rem;
+    }
+
     &::after {
         position: absolute;
         top: -1px;
@@ -29,7 +41,10 @@ $selection-color: white;
         color: white;
         font-size: 1.8rem;
         margin-left: 5rem;
-        margin-top: 2px;
+
+        @media only screen and (max-width: $breakpoint-md) {
+            margin-left: 2rem;
+        }
     }
 
     &__button-group {
@@ -37,7 +52,12 @@ $selection-color: white;
         top: 0;
         right: 0;
         display: flex;
-        justify-content: space-evenly;
+        width: 16rem;
+        justify-content: flex-end;
+
+        .button {
+            margin-right: 1.5rem;
+        }
     }
 
     &__picker {
@@ -90,6 +110,9 @@ $selection-color: white;
             width: 2rem;
             height: 2rem;
             margin: 1rem 2rem;
+            @media only screen and (max-width: $breakpoint-md) {
+                margin: 1rem 0;
+            }
         }
     }
 
@@ -108,6 +131,7 @@ $selection-color: white;
     &.moving {
         border: 2px solid white !important;
         border-radius: 5px;
+        cursor: grabbing !important;
 
         &::after {
             opacity: 0;
@@ -134,41 +158,56 @@ $selection-color: white;
         align-items: center;
         pointer-events: none;
         transition: opacity 0.2s ease-in-out;
-
         opacity: 0;
 
         p {
             font-size: 3rem;
             color: white;
         }
+
+        @media only screen and (max-width: $breakpoint-md) {
+            justify-content: flex-start;
+            padding-left: 7%;
+        }
     }
 
     &.show-duration {
+        cursor: col-resize !important;
+
         .editor-element__duration-change {
             opacity: 1;
         }
     }
 
-    &.selection-all {
+    &.selection-none {
+        cursor: pointer;
+    }
+
+    &.selection-border {
+        cursor: grab;
         border: $selection-width solid $selection-color;
+
+        .editor-element__button-group {
+            right: -$selection-width;
+        }
+    }
+
+    &.selection-all {
         border-top-width: $selection-width + 1;
         border-bottom-width: $selection-width + 1;
     }
 
     &.selection-top {
-        border: $selection-width solid $selection-color;
         border-top-width: $selection-width + 1;
         border-bottom: none;
     }
 
     &.selection-bottom {
-        border: $selection-width solid $selection-color;
         border-bottom-width: $selection-width + 1;
         border-top: none;
     }
 
     &.selection-sides {
-        border: $selection-width solid $selection-color;
         border-top: none;
         border-bottom: none;
     }

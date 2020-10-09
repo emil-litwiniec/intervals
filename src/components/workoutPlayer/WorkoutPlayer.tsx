@@ -16,6 +16,7 @@ type WorkoutPlayerState = {
     currentStepIndex: number;
     currentSetIteration: number;
     totalStepIndex: number;
+    windowWidth: number;
 };
 
 type WorkoutPlayerProps = RouteComponentProps & {
@@ -27,7 +28,6 @@ class WorkoutPlayer extends Component<WorkoutPlayerProps, WorkoutPlayerState> {
     intervalTimerCallables: ChildCallables | null = null;
     totalTimerCallables: ChildCallables | null = null;
     routeChangeTimeout: NodeJS.Timeout | null = null;
-    componentDidMount() {}
 
     constructor(props: WorkoutPlayerProps) {
         super(props);
@@ -37,7 +37,12 @@ class WorkoutPlayer extends Component<WorkoutPlayerProps, WorkoutPlayerState> {
             totalStepIndex: 0,
             currentSetIteration: 1,
             hasWorkoutFinished: false,
+            windowWidth: window.innerWidth,
         };
+    }
+
+    componentDidMount() {
+        window.addEventListener('resize', this.handleResize);
     }
 
     componentDidUpdate(prevProps: WorkoutPlayerProps, prevState: WorkoutPlayerState) {
@@ -52,10 +57,15 @@ class WorkoutPlayer extends Component<WorkoutPlayerProps, WorkoutPlayerState> {
     }
 
     componentWillUnmount() {
+        window.removeEventListener('resize', this.handleResize);
         if (this.routeChangeTimeout) {
             clearTimeout(this.routeChangeTimeout);
         }
     }
+
+    handleResize = () => {
+        this.setState({ windowWidth: window.innerWidth });
+    };
 
     onTimerFinished = () => {
         this.handleNextInterval();
@@ -180,12 +190,23 @@ class WorkoutPlayer extends Component<WorkoutPlayerProps, WorkoutPlayerState> {
 
     render() {
         const currentInterval = this.getInterval(this.state.currentStepIndex);
-
+        const { windowWidth } = this.state;
+        const isSmallDevice = windowWidth < 352;
         const style: CSSProperties = {
             backgroundColor: currentInterval ? currentInterval.color : 'red',
         };
-
         const hiddenPreviousButtonClass = this.state.currentStepIndex === 0 ? 'hidden' : '';
+
+        const intervalNamesGroup = currentInterval && (
+            <div className="workout-player__title-group">
+                <span className="workout-player__subsection-title">
+                    {currentInterval.subsectionTitles &&
+                        currentInterval.subsectionTitles[this.currentCoreIteration]}
+                </span>
+                <span className="workout-player__interval-title">{currentInterval!.mainTitle}</span>
+            </div>
+        );
+
         const totalWorkoutTimer = !this.state.hasWorkoutFinished && (
             <div className="workout-player__additional-info">
                 <Timer
@@ -224,17 +245,11 @@ class WorkoutPlayer extends Component<WorkoutPlayerProps, WorkoutPlayerState> {
                         circularDisplay
                         sound={true}
                     />
+                    {isSmallDevice && intervalNamesGroup}
                 </div>
                 <div className="workout-player__info">
                     {totalWorkoutTimer}
-
-                    <span className="workout-player__interval-title">
-                        {currentInterval!.mainTitle}
-                    </span>
-                    <span className="workout-player__subsection-title">
-                        {currentInterval.subsectionTitles &&
-                            currentInterval.subsectionTitles[this.currentCoreIteration]}
-                    </span>
+                    {!isSmallDevice && intervalNamesGroup}
                 </div>
             </>
         );

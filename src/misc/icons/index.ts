@@ -9,3 +9,5 @@ export { default as IconColorFill } from './IconColorFill';
 export { default as IconSoundOn } from './IconSoundOn';
 export { default as IconSoundOff } from './IconSoundOff';
 export { default as IconClose } from './IconClose';
+export { default as IconPlus } from './IconPlus';
+export { default as IconSettings } from './IconSettings';

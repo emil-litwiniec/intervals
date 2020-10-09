@@ -57,7 +57,7 @@ const SubsectionTitlesEditor: React.FC<SubsectionTilesEditorProps> = ({
     const containerStyle: CSSProperties = { backgroundColor: color };
 
     return (
-        <div className="subsection-titles-editor" style={containerStyle}>
+        <div className="subsection-titles-editor workout-editor__modal" style={containerStyle}>
             <span className="subsection-titles-editor__main-title">{mainTitle}</span>
             <ul className="subsection-titles-editor__list">{subsectionTitlesList}</ul>
         </div>

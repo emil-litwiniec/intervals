@@ -1,12 +1,6 @@
-.subsection-titles-editor {
-    width: 60rem;
-    height: 80rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-radius: 5px;
+@import '../../styles/variables';
 
+.subsection-titles-editor {
     &__main-title {
         font-size: 3rem;
         color: white;
@@ -18,6 +12,14 @@
 
         li {
             margin: 2rem 0;
+        }
+
+        @media only screen and (max-width: $breakpoint-md) {
+            padding: 1rem;
+
+            li {
+                margin: .4rem 0;
+            }
         }
     }
 }

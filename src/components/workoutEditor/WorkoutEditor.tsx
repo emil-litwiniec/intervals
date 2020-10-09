@@ -5,12 +5,13 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { currentWorkout, Interval, saveWorkout, WorkoutData } from '@/store/slices/workouts';
 
+import Modal from '@/components/modal/Modal';
 import { Button } from '../button';
 import WorkoutEditorElement from '@/components/workoutEditorElement/WorkoutEditorElement';
 import Input from '../input/Input';
 import { mockEditorElements } from './mockData';
 import { ColorResult } from 'react-color';
-import { IconPlay } from '@/misc/icons';
+import { IconPlus, IconPlay, IconSettings } from '@/misc/icons';
 import EditorElement, { BorderVariant } from '@/components/workoutEditorElement/EditorElement';
 import { roundBy5 } from '@/utils/math';
 
@@ -23,6 +24,7 @@ type WorkoutEditorState = {
     workoutId: string;
     coreIterations: number;
     setIterations: number;
+    showSettings: boolean;
 };
 
 type DispatchProps = {
@@ -72,6 +74,7 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
             workoutId: props.workout ? props.workout.id || uuidv4() : uuidv4(),
             coreIterations: props.workout ? props.workout.coreIterations : 1,
             setIterations: props.workout ? props.workout.setIterations : 1,
+            showSettings: false,
         };
     }
 
@@ -171,18 +174,8 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
     calculateProportions = () => {
         const calcPercentage = (duration: number): number => {
             const percentage = 100 / (this.totalDurationForHeightCalculation / duration);
-            if (percentage < 6) {
-                return 6;
-            } else {
-                return percentage;
-            }
+            return percentage;
         };
-
-        let totalPercentage = 0;
-        for (let i = 0; i < this.state.editorElements.length; i++) {
-            totalPercentage += calcPercentage(this.state.editorElements[i].duration);
-        }
-        if (totalPercentage > 104) return;
 
         this.setState((state) => ({
             editorElements: state.editorElements.map((el) => ({
@@ -223,7 +216,7 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
                 clientY > element.offsetTop - threshold && clientY < element.offsetTop + threshold;
 
             if (shouldSwap) {
-                this.udpateEditorElementsState((el, index, array) => {
+                this.udpateEditorElementsState((el, index) => {
                     if (index === elementIndex) {
                         el.swapHighlight = true;
                     }
@@ -316,12 +309,14 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
     };
 
     addEmptyElement = () => {
+        if (this.state.editorElements.length >= 6) return;
         this.setState(
             (state) => {
                 const newElement = new EditorElement();
-
+                const newEditorElements = [...state.editorElements];
+                newEditorElements.splice(newEditorElements.length - 1, 0, newElement);
                 return {
-                    editorElements: [...state.editorElements, newElement],
+                    editorElements: newEditorElements,
                 };
             },
             () => {
@@ -413,28 +408,43 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
             </div>
         );
 
+        const editorSettingsModal = (
+            <Modal
+                isOpen={this.state.showSettings}
+                handleClose={() => this.setState({ showSettings: false })}
+            >
+                <div className="workout-editor__settings-modal workout-editor__modal">
+                    {editorInputs}
+                </div>
+            </Modal>
+        );
+
         return (
             <>
+                {editorSettingsModal}
                 <section className="workout-editor">
-                    <div className="workout-editor__total-duration-display">
-                        <span>Total duration:</span>
-                        <span>~ {formatSecondsToMinutesLeftRounded(this.totalDuration)} min</span>
-                    </div>
-                    <div className="workout-editor__elements" ref={this.wrapperRef}>
-                        {this.editorElements}
-                    </div>
-                    <div className="workout-editor__button-wrapper">
-                        {editorInputs}
-                        <Button handleClick={this.addEmptyElement}>
-                            <div>Add interval</div>
+                    <div className="workout-editor__top-bar">
+                        <div className="workout-editor__total-duration-display">
+                            <span>
+                                ~ {formatSecondsToMinutesLeftRounded(this.totalDuration)} min
+                            </span>
+                        </div>
+                        <Button handleClick={() => this.setState({ showSettings: true })}>
+                            <IconSettings />
                         </Button>
 
+                        <Button handleClick={this.addEmptyElement}>
+                            <IconPlus />
+                        </Button>
                         <Button
                             additionalClassName="workout-editor__play-btn"
                             handleClick={this.saveData}
                         >
                             <IconPlay />
                         </Button>
+                    </div>
+                    <div className="workout-editor__elements" ref={this.wrapperRef}>
+                        {this.editorElements}
                     </div>
                 </section>
             </>

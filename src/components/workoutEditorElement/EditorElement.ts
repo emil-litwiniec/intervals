@@ -2,11 +2,11 @@ import { v4 as uuidv4 } from 'uuid';
 import { Interval } from '@/store/slices/workouts';
 
 export enum BorderVariant {
-    TOP = 'selection-top',
-    BOTTOM = 'selection-bottom',
-    SIDES = 'selection-sides',
-    ALL = 'selection-all',
-    NONE = '',
+    TOP = 'selection-border selection-top',
+    BOTTOM = 'selection-border selection-bottom',
+    SIDES = 'selection-border selection-sides',
+    ALL = 'selection-border selection-all',
+    NONE = 'selection-none',
 }
 
 export default class EditorElement {
@@ -14,7 +14,7 @@ export default class EditorElement {
     mainTitle = 'Empty Interval';
     subsectionTitles: string[] = [];
     color = 'coral';
-    duration = 30;
+    duration = 60;
     offsetTop = 0;
     height = 0;
     swapIndex = -1;
