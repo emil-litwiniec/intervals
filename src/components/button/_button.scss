@@ -13,6 +13,15 @@
         transform: scale(1.2) translateY(2px);
     }
 
+    &:disabled {
+        opacity: 0.3;
+
+        &:active .button__container > *,
+        &:hover .button__container > * {
+            transform: none !important;
+        }
+    }
+
     &--play {
         &:active .button__container > * {
             transform: translateX(1rem);

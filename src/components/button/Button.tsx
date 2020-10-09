@@ -6,6 +6,7 @@ export type ButtonProps = {
     variant?: string;
     buttonRef?: any;
     additionalClassName?: string;
+    disabled?: boolean;
 };
 
 const Button: React.FC<ButtonProps> = ({
@@ -14,12 +15,14 @@ const Button: React.FC<ButtonProps> = ({
     additionalClassName = '',
     children,
     buttonRef,
+    disabled = false
 }) => {
     return (
         <button
             className={`button button--${variant} ${additionalClassName}`}
             onClick={handleClick}
             ref={buttonRef}
+            disabled={disabled}
         >
             <div className="button__container">{children}</div>
         </button>

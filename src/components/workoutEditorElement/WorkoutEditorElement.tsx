@@ -30,6 +30,7 @@ export interface EditorElementProps {
     parentOffsetTop: number;
     index: number;
     lastIndex: number;
+    disableDelete: boolean;
     onDurationChange(id: string, diff: number): void;
     onPositionChange(id: string, clientY: number): void;
     onPositionUpdate(id: string, clientY: number): void;
@@ -204,6 +205,7 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps, Wo
             coreIterations,
             lastIndex,
             index,
+            disableDelete = false
         } = this.props;
         const swapHighlightClassname = this.props.swapHighlight ? 'swap-highlight' : '';
         const moveClassname = !this.shouldNotMove && this.isVerticalDrag ? 'moving' : '';
@@ -249,6 +251,7 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps, Wo
                     <Button
                         handleClick={(event) => this.props.onDelete(this.props.id)}
                         variant="editor-element"
+                        disabled={disableDelete}
                     >
                         <IconDelete className="editor-element__delete" />
                     </Button>

@@ -25,6 +25,8 @@ type WorkoutEditorState = {
     coreIterations: number;
     setIterations: number;
     showSettings: boolean;
+    disableDelete: boolean;
+    disableAdd: boolean;
 };
 
 type DispatchProps = {
@@ -75,6 +77,8 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
             coreIterations: props.workout ? props.workout.coreIterations : 1,
             setIterations: props.workout ? props.workout.setIterations : 1,
             showSettings: false,
+            disableDelete: false,
+            disableAdd: false,
         };
     }
 
@@ -99,6 +103,7 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
                     ref={newRef}
                     index={index}
                     lastIndex={array.length - 1}
+                    disableDelete={this.state.disableDelete}
                     {...element}
                 />
             );
@@ -106,9 +111,24 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
     }
 
     componentDidMount() {
+        this.setDisabledStates();
         this.calculateProportions();
         this.updateCoreBorders();
     }
+
+    componentDidUpdate(prevProps: WorkoutEditorProps, prevState: WorkoutEditorState) {
+        const hasEditorElementsAmountChanged =
+            prevState.editorElements.length !== this.state.editorElements.length;
+        hasEditorElementsAmountChanged && this.setDisabledStates();
+    }
+
+    setDisabledStates = () => {
+        const elements = this.state.editorElements;
+        const shouldDisableDelete = elements.length <= 3;
+        const shouldDisableAdd = elements.length >= 6;
+
+        this.setState({ disableAdd: shouldDisableAdd, disableDelete: shouldDisableDelete });
+    };
 
     get totalDurationForHeightCalculation(): number {
         return this.state.editorElements.reduce((acc, curr): any => {
@@ -433,7 +453,7 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
                             <IconSettings />
                         </Button>
 
-                        <Button handleClick={this.addEmptyElement}>
+                        <Button handleClick={this.addEmptyElement} disabled={this.state.disableAdd}>
                             <IconPlus />
                         </Button>
                         <Button
