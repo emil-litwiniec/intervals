@@ -15,8 +15,11 @@ const WorkoutsList: React.FC = () => {
             key={workout.id}
         />
     ));
+    const instruction = <span className="workouts-list__tip">Swipe to delete or edit workout</span>;
+
     return (
         <section className="workouts-list">
+            {instruction}
             {workoutsList.length > 0 ? (
                 workoutsList
             ) : (

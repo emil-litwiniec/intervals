@@ -1,0 +1,43 @@
+@import '../../styles/variables';
+
+.editor-help {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 80%;
+    color: white;
+    padding: 4rem 8rem;
+    min-width: 60rem;
+
+    @media only screen and (max-width: $breakpoint-md) {
+        padding: 7rem 9rem;
+    }
+
+    h4 {
+        font-size: 3rem;
+        text-transform: uppercase;
+
+        @media only screen and (max-width: $breakpoint-md) {
+            font-size: 2.5rem;
+        }
+    }
+
+    p {
+        font-size: 1.6rem;
+        line-height: 2.8rem;
+        margin-top: 6rem;
+
+        @media only screen and (max-width: $breakpoint-md) {
+            font-size: 1.6rem;
+            margin-top: 2rem;
+        }
+    }
+
+    .icon {
+        width: 2rem;
+        height: 2rem;
+        margin: 0 1rem;
+        transform: translateY(20%);
+    }
+}

@@ -11,3 +11,4 @@ export { default as IconSoundOff } from './IconSoundOff';
 export { default as IconClose } from './IconClose';
 export { default as IconPlus } from './IconPlus';
 export { default as IconSettings } from './IconSettings';
+export { default as IconHelp } from './IconHelp';

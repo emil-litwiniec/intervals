@@ -11,12 +11,13 @@ import WorkoutEditorElement from '@/components/workoutEditorElement/WorkoutEdito
 import Input from '../input/Input';
 import { mockEditorElements } from './mockData';
 import { ColorResult } from 'react-color';
-import { IconPlus, IconPlay, IconSettings } from '@/misc/icons';
+import { IconPlus, IconPlay, IconSettings, IconHelp } from '@/misc/icons';
 import EditorElement, { BorderVariant } from '@/components/workoutEditorElement/EditorElement';
 import { roundBy5 } from '@/utils/math';
 
 import './_workoutEditor.scss';
 import { formatSecondsToMinutesLeftRounded } from '@/utils/format';
+import EditorHelp from './EditorHelp';
 
 type WorkoutEditorState = {
     editorElements: EditorElement[];
@@ -25,6 +26,7 @@ type WorkoutEditorState = {
     coreIterations: number;
     setIterations: number;
     showSettings: boolean;
+    showHelp: boolean;
     disableDelete: boolean;
     disableAdd: boolean;
 };
@@ -77,6 +79,7 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
             coreIterations: props.workout ? props.workout.coreIterations : 1,
             setIterations: props.workout ? props.workout.setIterations : 1,
             showSettings: false,
+            showHelp: false,
             disableDelete: false,
             disableAdd: false,
         };
@@ -439,8 +442,20 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
             </Modal>
         );
 
+        const editorHelpModal = (
+            <Modal
+                isOpen={this.state.showHelp}
+                handleClose={() => this.setState({ showHelp: false })}
+            >
+                <div className="workout-editor__help-modal workout-editor__modal">
+                    <EditorHelp />
+                </div>
+            </Modal>
+        );
+
         return (
             <>
+                {editorHelpModal}
                 {editorSettingsModal}
                 <section className="workout-editor">
                     <div className="workout-editor__top-bar">
@@ -461,6 +476,9 @@ class WorkoutEditor extends React.Component<WorkoutEditorProps, WorkoutEditorSta
                             handleClick={this.saveData}
                         >
                             <IconPlay />
+                        </Button>
+                        <Button handleClick={() => this.setState({ showHelp: true })}>
+                            <IconHelp />
                         </Button>
                     </div>
                     <div className="workout-editor__elements" ref={this.wrapperRef}>
