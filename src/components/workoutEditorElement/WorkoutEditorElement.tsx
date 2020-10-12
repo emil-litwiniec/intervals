@@ -12,7 +12,7 @@ import SubsectionTitlesEditor from '@/components/subsectionTitlesEditor/Subsecti
 import { ColorResult, CirclePicker } from 'react-color';
 
 import Input from '@/components/input/Input';
-import { BorderVariant } from './EditorElement';
+import { availableColors, BorderVariant } from './EditorElement';
 import { roundBy5 } from '@/utils/math';
 
 export interface EditorElementProps {
@@ -205,7 +205,7 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps, Wo
             coreIterations,
             lastIndex,
             index,
-            disableDelete = false
+            disableDelete = false,
         } = this.props;
         const swapHighlightClassname = this.props.swapHighlight ? 'swap-highlight' : '';
         const moveClassname = !this.shouldNotMove && this.isVerticalDrag ? 'moving' : '';
@@ -230,6 +230,7 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps, Wo
         );
         const colorPicker = this.state.showPicker && (
             <CirclePicker
+                colors={availableColors}
                 color={color}
                 onChange={(color: ColorResult) => this.props.onColorChange(this.props.id, color)}
                 className="editor-element__picker"

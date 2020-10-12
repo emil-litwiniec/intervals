@@ -2,10 +2,18 @@ import { WorkoutsState } from '@/store/slices/workouts';
 import EditorElement from '@/components/workoutEditorElement/EditorElement';
 
 export const mockEditorElements: EditorElement[] = [
-    new EditorElement(),
-    new EditorElement(),
-    new EditorElement(),
-    new EditorElement(),
+    new EditorElement({
+        mainTitle: 'Warm Up',
+    }),
+    new EditorElement({
+        mainTitle: 'High Interval',
+    }),
+    new EditorElement({
+        mainTitle: 'Low Interval',
+    }),
+    new EditorElement({
+        mainTitle: 'Rest',
+    }),
 ];
 
 export const mockStoreWorkoutData: WorkoutsState = {
