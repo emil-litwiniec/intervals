@@ -19,14 +19,14 @@ export const mockEditorElements: EditorElement[] = [
 export const mockStoreWorkoutData: WorkoutsState = {
     xs34: {
         id: 'xs34',
-        title: 'Funk!',
+        title: 'Funky Workout',
         totalDuration: 1440,
         coreIterations: 10,
         setIterations: 2,
         pattern: [
             {
                 id: 'xasda',
-                mainTitle: 'High Interval Cool',
+                mainTitle: 'High Interval',
                 subsectionTitles: [
                     'Seal Jacks',
                     'Push Ups',

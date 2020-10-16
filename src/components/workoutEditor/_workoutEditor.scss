@@ -92,15 +92,16 @@
 
         @media only screen and (max-width: $breakpoint-md) {
             height: 5rem;
+
+            .button {
+                margin-left: 2rem;
+
+                .icon {
+                    width: 1.5rem;
+                    height: 1.5rem;
+                }
+            }
         }
-    }
-
-    &__settings-modal {
-        background-color: coral;
-    }
-
-    &__help-modal {
-        background-color: cornflowerblue;
     }
 
     &__modal {
@@ -114,6 +115,18 @@
 
         @media only screen and (max-width: $breakpoint-md) {
             width: 100vw;
+        }
+    }
+
+    &__settings-modal {
+        background-color: coral;
+    }
+
+    &__help-modal {
+        background-color: cornflowerblue;
+
+        @media only screen and (max-width: $breakpoint-sm) {
+            justify-content: flex-start;
         }
     }
 }

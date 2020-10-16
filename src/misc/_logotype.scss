@@ -7,14 +7,14 @@
     height: 5rem;
 
     @media only screen and (max-width: $breakpoint-md) {
-        margin-top: 0.5rem;
+        margin-top: 0;
         margin-right: 2rem;
         width: 14rem;
     }
 
     @media only screen and (max-width: $breakpoint-sm) {
         margin-top: 0;
-        height: 4.5rem ;
+        height: 4.5rem;
         width: 10rem;
         margin-right: 0.5rem;
     }

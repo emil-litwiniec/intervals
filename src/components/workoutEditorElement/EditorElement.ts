@@ -24,10 +24,11 @@ export const availableColors = [
     '#ff5722',
     '#ffa000',
     '#f57c00',
+    '#e72837',
     '#e91e63',
+    '#fb5858',
     'coral',
 ];
-
 
 const getRandomInt = (min: number = 0, max: number): number => {
     min = Math.ceil(min);
@@ -77,7 +78,7 @@ export default class EditorElement {
             mainTitle = 'Empty Interval',
             subsectionTitles = [],
             duration = 60,
-            color = RandomColor.getInstance().getColor()
+            color = RandomColor.getInstance().getColor(),
         } = intervalData;
         this.id = id;
         this.mainTitle = mainTitle;
