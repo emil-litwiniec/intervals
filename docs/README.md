@@ -6,7 +6,6 @@ Configurable **countdown interval timer** web app.
 
 It allows to **create** and **run** interval trainings.
 
-App has a **minimalistic** and **intuitive** UI.
 
 ## Live
 
@@ -14,11 +13,14 @@ https://silly-wright-559bad.netlify.app/
 
 ## Features
 
--   Starting page with **listed previous workouts**, which are stored in browser's **local storage**.
+-   **Listed previous workouts**, which are stored in browser's **local storage**.
 
 -   Workout editor with block elements representing intervals, which can be easily configured with **swipe gestures** and **drag & drop** actions. User can **set iterations** for each set or interval group, give **custom names** for interval and each exercise in the set.
 
 -   Player with beautiful **circular timer**, **controls**, UI elements showing **current workout status** ( time left, step, set...), **sound alerts** when interval starts and before it ends.
+
+- **Minimalistic** and **intuitive** UI.
+
 
 ## Screenshots
 
@@ -63,11 +65,6 @@ The page will reload if you make edits.<br  />
 
 You will also see any lint errors in the console.
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.<br  />
-
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
 ### `npm run build`
 
@@ -77,9 +74,6 @@ It correctly bundles React in production mode and optimizes the build for the be
 
 The build is minified and the filenames include the hashes.<br  />
 
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
 ## Links
 
