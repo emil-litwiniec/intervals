@@ -79,7 +79,7 @@ The build is minified and the filenames include the hashes.<br  />
 
 -   Live: https://silly-wright-559bad.netlify.app/
 
--   Repository: https://github.com/EmilTheSadCat/interval-timer
+-   Repository: https://github.com/EmilTheSadCat/intervals
 
 ## Licensing
 
