@@ -1,4 +1,4 @@
-import { roundBy5 } from '../../utils/math';
+import { roundBy5 } from '@/utils/math';
 
 describe('math utils', () => {
     describe('roundBy5', () => {

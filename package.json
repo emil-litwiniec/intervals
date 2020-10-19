@@ -126,6 +126,7 @@
     ],
     "modulePaths": [],
     "moduleNameMapper": {
+      "@/(.*)$": "<rootDir>/src/$1",
       "^react-native$": "react-native-web",
       "^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy"
     },
@@ -150,5 +151,8 @@
     "presets": [
       "react-app"
     ]
+  },
+  "devDependencies": {
+    "react-test-renderer": "^16.14.0"
   }
 }

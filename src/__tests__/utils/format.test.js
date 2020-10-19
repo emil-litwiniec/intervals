@@ -1,4 +1,4 @@
-import { formatSecondsToMinutesLeftRounded, formatSecondsToMinutes } from '../../utils/format';
+import { formatSecondsToMinutesLeftRounded, formatSecondsToMinutes } from '@/utils/format';
 
 describe('format utils', () => {
     describe('formatSecondsToMinutesLeftRounded', () => {

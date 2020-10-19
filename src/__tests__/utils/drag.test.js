@@ -1,4 +1,4 @@
-import { calcDragDirection, DragDirection, Point } from '../../utils/drag';
+import { calcDragDirection, DragDirection, Point } from '@/utils/drag';
 
 const defaultThreshold = { horizontal: 20, vertical: 20 };
 const initPos = new Point(0, 0);
