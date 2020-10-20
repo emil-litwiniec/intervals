@@ -112,7 +112,7 @@ class SwipeListElement extends DraggableComponentBase<Props> {
     render() {
         const { leftElement, rightElement, children } = this.props;
         return (
-            <div className="swipe-list-element" ref={this.container}>
+            <div className="swipe-list-element" ref={this.container} data-testid="swipeListElement">
                 <div className="swipe-list-element__main" ref={this.mainElementRef}>
                     {children}
                 </div>

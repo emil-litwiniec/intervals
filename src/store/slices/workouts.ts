@@ -48,7 +48,10 @@ export const workoutsSlice: Slice = createSlice({
 
 export const { saveWorkout, deleteWorkout, deleteAllWorkouts } = workoutsSlice.actions;
 
-export const currentWorkout = (state: { workouts: WorkoutsState }, id: string) => {
+export const currentWorkout = (
+    state: { workouts: WorkoutsState } = { workouts: {} },
+    id: string
+) => {
     const workout = state.workouts[id];
     return workout || null;
 };

@@ -242,6 +242,7 @@ class WorkoutEditorElement extends DraggableComponentBase<EditorElementProps, Wo
                 className={`editor-element ${swapHighlightClassname} ${moveClassname} ${borderVariant}`}
                 style={style}
                 ref={this.container}
+                data-testid="workoutEditorElement"
             >
                 {this.instruction}
                 <div className="editor-element__button-group">
